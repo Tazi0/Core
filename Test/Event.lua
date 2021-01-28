@@ -41,4 +41,3 @@ AddEventHandler("KOTH:DeathDetection", function(Data)
     AnimpostfxPlay("DeathFailOut", 0, true)
     PlaySoundFrontend(-1, "Bed", "WastedSounds", true)
 end)
-

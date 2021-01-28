@@ -1,23 +1,26 @@
-local Teams = {
-   "red" = {
-      AddPlayer = function(self, playerID) {
+Teams = {
+   red = {
+      AddPlayer = function(self, playerID)
+            if type(self) ~= "table" then return false end
             table.insert(self.Players, playerID) 
-      },
-      Players = []
+      end,
+      RemovePlayer = function(self, playerID)
+            if type(self) ~= "table" then return false end
+            local index = tablefind(self.Players, playerID)
+
+            if index == nil then return false end
+            table.remove(self.Players, index)
+      end,
+      Players = {}
    }
 }
 
+Teams["red"]:AddPlayer("123")
+
 print(dump(Teams["red"].Players))
 
-function dump(o)
-   if type(o) == 'table' then
-      local s = '{ '
-      for k,v in pairs(o) do
-         if type(k) ~= 'number' then k = '"'..k..'"' end
-         s = s .. '['..k..'] = ' .. dump(v) .. ','
-      end
-      return s .. '} '
-   else
-      return tostring(o)
-   end
-end
+Teams["red"]:RemovePlayer("123")
+
+print(dump(Teams["red"].Players))
+
+print(dump(Config))

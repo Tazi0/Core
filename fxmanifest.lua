@@ -7,9 +7,11 @@ version '0.0.1'
 
 -- What to run
 client_scripts {
-    'Client/main.lua'
+    'config.lua',
+    'Client/*.lua'
 }
 
 server_scripts {
-    'main.lua'
+    'config.lua',
+    'Server/*.lua'
 }
