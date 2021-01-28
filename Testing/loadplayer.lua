@@ -18,6 +18,7 @@ AddEventHandler('KOTH:LoadPlayer', function(Sex, PlayerSkin, Position)
 
 -- PlayerSkin for model
     if Sex == "Male" then
+
 -- Insert
     elseif Sex == "Female"
 -- Insert
