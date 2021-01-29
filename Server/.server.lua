@@ -1,5 +1,3 @@
-print("server")
-
 function tablefind(tab,el)
     for index, value in pairs(tab) do
         if value == el then
@@ -11,11 +9,15 @@ end
 function dump(o)
    if type(o) == 'table' then
       local s = '{ '
+      local sub = false
       for k,v in pairs(o) do
          if type(k) ~= 'number' then k = '"'..k..'"' end
-         s = s .. '['..k..'] = ' .. dump(v) .. ','
+         s = s .. '['..k..'] = ' .. dump(v) .. ', '
+         sub = true
       end
-      return s .. '} '
+      if sub then s = s:sub(0, #s - 2) 
+      else s = s:sub(0, #s - 1) end
+      return s .. ' }'
    else
       return tostring(o)
    end
