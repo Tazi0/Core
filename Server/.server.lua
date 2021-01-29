@@ -22,3 +22,36 @@ function dump(o)
       return tostring(o)
    end
 end
+
+function PlayerIdentifiers(playerID)
+    local identifiers = {
+        steam = "",
+        ip = "",
+        discord = "",
+        license = "",
+        xbl = "",
+        live = "",
+        id = playerID
+    }
+
+    for i = 0, GetNumPlayerIdentifiers(playerID) - 1 do
+        local id = GetPlayerIdentifier(playerID, i)
+
+        -- Table
+        if string.find(id, "steam") then
+            identifiers.steam = id
+        elseif string.find(id, "ip") then
+            identifiers.ip = id
+        elseif string.find(id, "discord") then
+            identifiers.discord = id
+        elseif string.find(id, "license") then
+            identifiers.license = id
+        elseif string.find(id, "xbl") then
+            identifiers.xbl = id
+        elseif string.find(id, "live") then
+            identifiers.live = id
+        end
+    end
+
+    return identifiers
+end
