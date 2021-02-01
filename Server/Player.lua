@@ -1,19 +1,8 @@
-MySQL.ready(function() 
-    local player = Player(1)
-
-    print(dump(player))
-
-    -- player.Money:add(10)
-    -- player.Money:remove(10)
-
-    player:setPos(674.883, 548.269, 133.94, 10)
-end)
-
 function Player(playerID)
     local ids = PlayerIdentifiers(playerID)
-    if ids.steam == "" then return nil end
+    if ids[Config.Player.Connection] == "" then return nil end
 
-    local res = MySQL.Sync.fetchAll('SELECT * FROM users WHERE steamID=@steamID', { ['@steamID'] = ids.steam })
+    local res = MySQL.Sync.fetchAll('SELECT * FROM users WHERE steamID=@steamID', { ['@steamID'] = ids[Config.Player.Connection] })
 
 
     if type(res) ~= "table" then 
@@ -25,10 +14,12 @@ function Player(playerID)
             streak = 0
         }
 
-        MySQL.Sync.execute('INSERT INTO users (steamID) VALUES (@steamID)', { ['@steamID'] = ids.steam })
+        MySQL.Sync.execute('INSERT INTO users (steamID) VALUES (@steamID)', { ['@steamID'] = ids[Config.Player.Connection] })
     else
         res = res[1]
     end
+
+    ids.prefered = Config.Player.Connection
 
     return {
         Money = {
@@ -39,7 +30,7 @@ function Player(playerID)
 
                   self.cash = self.cash + amount
 
-                  MySQL.Sync.execute("UPDATE users SET cash = cash + @added WHERE steamID=@steamID", { ['@steamID'] = self.__ids.steam, ['@added'] = amount})
+                  MySQL.Sync.execute("UPDATE users SET cash = cash + @added WHERE steamID=@steamID", { ['@steamID'] = self.__ids.prefered, ['@added'] = amount})
                   return self.cash
             end,
             remove = function(self, amount)
@@ -47,7 +38,7 @@ function Player(playerID)
 
                   self.cash = self.cash - amount
 
-                  MySQL.Sync.execute("UPDATE users SET cash = cash - @added WHERE steamID=@steamID", { ['@steamID'] = self.__ids.steam, ['@added'] = amount})
+                  MySQL.Sync.execute("UPDATE users SET cash = cash - @added WHERE steamID=@steamID", { ['@steamID'] = self.__ids.prefered, ['@added'] = amount})
                   return self.cash
             end,
             reset = function(self)
@@ -55,7 +46,7 @@ function Player(playerID)
 
                   self.cash = 0
 
-                  MySQL.Sync.execute("UPDATE users SET cash = 0 WHERE steamID=@steamID", { ['@steamID'] = self.__ids.steam})
+                  MySQL.Sync.execute("UPDATE users SET cash = 0 WHERE steamID=@steamID", { ['@steamID'] = self.__ids.prefered})
 
                   return true
             end
@@ -68,7 +59,7 @@ function Player(playerID)
 
                   self.xp = self.xp + amount
 
-                  MySQL.Sync.execute("UPDATE users SET xp = xp + @added WHERE steamID=@steamID", { ['@steamID'] = self.__ids.steam, ['@added'] = amount})
+                  MySQL.Sync.execute("UPDATE users SET xp = xp + @added WHERE steamID=@steamID", { ['@steamID'] = self.__ids.prefered, ['@added'] = amount})
                   return self.xp
             end,
             removeXP = function(self, amount)
@@ -76,7 +67,7 @@ function Player(playerID)
 
                   self.xp = self.xp - amount
 
-                  MySQL.Sync.execute("UPDATE users SET xp = xp - @added WHERE steamID=@steamID", { ['@steamID'] = self.__ids.steam, ['@added'] = amount})
+                  MySQL.Sync.execute("UPDATE users SET xp = xp - @added WHERE steamID=@steamID", { ['@steamID'] = self.__ids.prefered, ['@added'] = amount})
                   return self.xp
             end,
             reset = function(self)
@@ -84,7 +75,7 @@ function Player(playerID)
 
                   self.xp = 0
 
-                  MySQL.Sync.execute("UPDATE users SET xp = 0 WHERE steamID=@steamID", { ['@steamID'] = self.__ids.steam})
+                  MySQL.Sync.execute("UPDATE users SET xp = 0 WHERE steamID=@steamID", { ['@steamID'] = self.__ids.prefered})
 
                   return true
             end
@@ -101,4 +92,26 @@ function Player(playerID)
     }
 end
 
--- print(Player(1))
+AddEventHandler("playerConnecting", function(name, setKickReason, deferrals)
+    local src = source
+    local player = Player(src)
+    if(type(player) == "nil") then
+        deferrals.done(_R("Please start %s and restart FiveM", Config.Player.Connection))
+    else
+        KOTH.Cache.Players[src] = player
+    end
+end)
+
+AddEventHandler('playerDropped', function (reason)
+    local player = KOTH.Cache.Players[source]
+
+    if(type(player) ~= "nil") then KOTH.Cache.Players[source] = nil end
+end)
+
+AddEventHandler('onResourceStart', function(resourceName)
+    if (GetCurrentResourceName() ~= resourceName) then return end
+
+    for _, src in ipairs(GetPlayers()) do
+        KOTH.Cache.Players[src] = Player(src)
+    end
+end)

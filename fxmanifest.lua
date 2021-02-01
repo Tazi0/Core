@@ -7,6 +7,7 @@ version '0.0.1'
 
 -- What to run
 client_scripts {
+    'Language/*.lua',
     'Crossbase/*.lua',
     'config.lua',
     'Client/*.lua'
@@ -14,6 +15,7 @@ client_scripts {
 
 server_scripts {
     '@mysql-async/lib/MySQL.lua',
+    'Language/*.lua',
     'Crossbase/*.lua',
     'config.lua',
     'Server/*.lua'

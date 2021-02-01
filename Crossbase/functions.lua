@@ -23,6 +23,10 @@ function dump(o)
    end
 end
 
+function _R(string, ...)
+   return string.format(string, args)
+end
+
 function PlayerIdentifiers(playerID)
     local identifiers = {
         steam = "",

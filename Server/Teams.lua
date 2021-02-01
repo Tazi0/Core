@@ -24,15 +24,15 @@ _TeamBase = {
 Teams = {
    red = {
       Hex = "#FF0000",
-      Title = Lang["title"]["red"]
+      Title = Config.Lang["title"]["red"]
    },
    green = {
       Hex = "#00FF00",
-      Title = Lang["title"]["green"]
+      Title = Config.Lang["title"]["green"]
    },
    blue = {
       Hex = "#0000FF",
-      Title = Lang["title"]["blue"]
+      Title = Config.Lang["title"]["blue"]
    }
 }
 
