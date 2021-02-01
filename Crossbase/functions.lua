@@ -24,7 +24,7 @@ function dump(o)
 end
 
 function _R(string, ...)
-   return string.format(string, args)
+   return string.format(string, ...)
 end
 
 function PlayerIdentifiers(playerID)
@@ -58,4 +58,41 @@ function PlayerIdentifiers(playerID)
     end
 
     return identifiers
+end
+
+function missionTextDisplay(text, time)
+    ClearPrints()
+    SetTextEntry_2("STRING")
+    AddTextComponentString(text)
+    DrawSubtitleTimed(time, 1)
+end
+
+function zoneLoop()
+    Citizen.CreateThread(function()
+        Wait(60000*1)
+        print("loop")
+        local highest = 0
+        local team = nil
+
+        for k,v in pairs(Zones.Active) do
+            local teams = v.Teams
+
+            for j, l in pairs(teams) do
+                if highest < l then
+                    team = j
+                    highest = l
+                end
+            end
+        end
+
+        if highest ~= 0 or team ~= nil then 
+            Teams[team].Points = Teams[team].Points + 1
+            -- Todo: trigger UI to update the points
+            -- TriggerEvent("koth:teamPoint", -1, team, Teams[team].Points)
+        else
+            print("no winner found")
+        end
+
+        zoneLoop()
+    end)
 end

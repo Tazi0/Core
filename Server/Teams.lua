@@ -15,7 +15,6 @@ _TeamBase = {
                   table.remove(self, index)
                   self.length = self.length - 1
             end
-
       },
       Points = 0
 }
@@ -39,11 +38,18 @@ Teams = {
 -- place the _TeamBase to each team
 for i, team in pairs(Teams) do
       for j, e in pairs(_TeamBase) do
-            if Teams[i][j] ~= nil then return end
-            Teams[i][j] = e
+            if type(_TeamBase[j]) == "table" then
+                  Teams[i][j] = {}
+                  for k, l in pairs(Teams[i][j]) do 
+                        if Teams[i][j][k] ~= nil then return end
+                        Teams[i][j][k] = l
+                  end
+            else
+                  if Teams[i][j] ~= nil then return end
+                  Teams[i][j] = e
+            end
       end
 end
-
 
 -- ! Testing ! --
 -- Teams["red"].Players:add("123")
