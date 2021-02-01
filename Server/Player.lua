@@ -6,12 +6,12 @@ MySQL.ready(function()
     -- player.Money:add(10)
     -- player.Money:remove(10)
 
-    player:setPos(10, 10, 10, 10)
+    player:setPos(674.883, 548.269, 133.94, 10)
 end)
 
 function Player(playerID)
     local ids = PlayerIdentifiers(playerID)
-    if ids.steam == "" then return false end
+    if ids.steam == "" then return nil end
 
     local res = MySQL.Sync.fetchAll('SELECT * FROM users WHERE steamID=@steamID', { ['@steamID'] = ids.steam })
 

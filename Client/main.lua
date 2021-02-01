@@ -1,15 +1,11 @@
-_G['Preference']
-
 RegisterNetEvent("koth:setPosition")
 AddEventHandler("koth:setPosition", function (x, y, z, rotation)
     local ped = PlayerPedId()
 
-    SetEntityCoords(ped, x, y, z, false, false, true)
+    SetEntityCoords(ped, x + .0, y + .0, z + .0, false, false, true)
     
     if type(rotation) ~= "nil" then
-        local CurrRotation = GetEntityRotation(ped)
-        print(CurrRotation)
-        SetEntityRotation(CurrRotation.x, CurrRotation.y, CurrRotation.z + rotation)
+        SetEntityRotation(ped, 0, 0, rotation + .0, 2, true)
     end
     return true
 end)
