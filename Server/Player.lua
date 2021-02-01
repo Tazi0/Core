@@ -1,31 +1,117 @@
-function PlayerIdentifiers(src)
-    local identifiers = {
-        steam = "",
-        ip = "",
-        discord = "",
-        license = "",
-        xbl = "",
-        live = ""
-    }
+function Player(playerID)
+    local ids = PlayerIdentifiers(playerID)
+    if ids[Config.Player.Connection] == "" then return nil end
 
-    for i = 0, GetNumPlayerIdentifiers(src) - 1 do
-        local id = GetPlayerIdentifier(src, i)
+    local res = MySQL.Sync.fetchAll('SELECT * FROM users WHERE steamID=@steamID', { ['@steamID'] = ids[Config.Player.Connection] })
 
-        -- Table
-        if string.find(id, "steam") then
-            identifiers.steam = id
-        elseif string.find(id, "ip") then
-            identifiers.ip = id
-        elseif string.find(id, "discord") then
-            identifiers.discord = id
-        elseif string.find(id, "license") then
-            identifiers.license = id
-        elseif string.find(id, "xbl") then
-            identifiers.xbl = id
-        elseif string.find(id, "live") then
-            identifiers.live = id
-        end
+
+    if type(res) ~= "table" then 
+        res = {
+            cash = 0,
+            level = 0,
+            xp = 0,
+            deaths = 0,
+            streak = 0
+        }
+
+        MySQL.Sync.execute('INSERT INTO users (steamID) VALUES (@steamID)', { ['@steamID'] = ids[Config.Player.Connection] })
+    else
+        res = res[1]
     end
 
-    return identifiers
+    ids.prefered = Config.Player.Connection
+
+    return {
+        Money = {
+            __ids = ids,
+            cash = tonumber(res.cash),
+            add = function(self, amount)
+                  if type(self) ~= "table" then return false end
+
+                  self.cash = self.cash + amount
+
+                  MySQL.Sync.execute("UPDATE users SET cash = cash + @added WHERE steamID=@steamID", { ['@steamID'] = self.__ids.prefered, ['@added'] = amount})
+                  return self.cash
+            end,
+            remove = function(self, amount)
+                  if type(self) ~= "table" then return false end
+
+                  self.cash = self.cash - amount
+
+                  MySQL.Sync.execute("UPDATE users SET cash = cash - @added WHERE steamID=@steamID", { ['@steamID'] = self.__ids.prefered, ['@added'] = amount})
+                  return self.cash
+            end,
+            reset = function(self)
+                  if type(self) ~= "table" then return false end
+
+                  self.cash = 0
+
+                  MySQL.Sync.execute("UPDATE users SET cash = 0 WHERE steamID=@steamID", { ['@steamID'] = self.__ids.prefered})
+
+                  return true
+            end
+        },
+        Level = {
+            xp = res.xp,
+            level = res.level,
+            addXP = function(self, amount)
+                  if type(self) ~= "table" then return false end
+
+                  self.xp = self.xp + amount
+
+                  MySQL.Sync.execute("UPDATE users SET xp = xp + @added WHERE steamID=@steamID", { ['@steamID'] = self.__ids.prefered, ['@added'] = amount})
+                  return self.xp
+            end,
+            removeXP = function(self, amount)
+                  if type(self) ~= "table" then return false end
+
+                  self.xp = self.xp - amount
+
+                  MySQL.Sync.execute("UPDATE users SET xp = xp - @added WHERE steamID=@steamID", { ['@steamID'] = self.__ids.prefered, ['@added'] = amount})
+                  return self.xp
+            end,
+            reset = function(self)
+                  if type(self) ~= "table" then return false end
+
+                  self.xp = 0
+
+                  MySQL.Sync.execute("UPDATE users SET xp = 0 WHERE steamID=@steamID", { ['@steamID'] = self.__ids.prefered})
+
+                  return true
+            end
+        },
+        Identifiers = ids,
+        Deaths = res.deaths,
+        Kills = res.kills,
+        Streak = res.streak,
+        LastLoggedIn = res.lastLoggedIn,
+        Team = nil,
+        setPos = function(self, x, y, z, rotation)
+            TriggerClientEvent("koth:setPosition", self.Identifiers.id, x, y, z, rotation)
+        end
+    }
 end
+
+AddEventHandler("playerConnecting", function(name, setKickReason, deferrals)
+    local src = source
+    local player = Player(src)
+    if(type(player) == "nil") then
+        deferrals.done(_R("Please start %s and restart FiveM", Config.Player.Connection))
+    else
+        KOTH.Cache.Players[src] = player
+    end
+end)
+
+AddEventHandler('playerDropped', function (reason)
+    local player = KOTH.Cache.Players[source]
+
+    if(type(player) ~= "nil") then KOTH.Cache.Players[source] = nil end
+end)
+
+AddEventHandler('onResourceStart', function(resourceName)
+    if (GetCurrentResourceName() ~= resourceName) then return end
+
+    for _, src in ipairs(GetPlayers()) do
+        KOTH.Cache.Players[src] = Player(src)
+    end
+end)

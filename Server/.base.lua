@@ -1,0 +1,6 @@
+KOTH = {}
+
+
+KOTH["Cache"] = {
+    Players = {}
+}
