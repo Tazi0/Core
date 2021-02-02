@@ -86,6 +86,7 @@ function Player(playerID)
         Streak = res.streak,
         LastLoggedIn = res.lastLoggedIn,
         Team = nil,
+        Invincible = false,
         setPos = function(self, x, y, z, rotation)
             TriggerClientEvent("koth:setPosition", self.Identifiers.id, x, y, z, rotation)
         end
@@ -114,4 +115,11 @@ AddEventHandler('onResourceStart', function(resourceName)
     for _, src in ipairs(GetPlayers()) do
         KOTH.Cache.Players[src] = Player(src)
     end
+end)
+
+RegisterNetEvent("koth:getPlayer")
+AddEventHandler("koth:getPlayer", function(src, cb)
+    if source ~= "" then src = source end
+
+    cb(KOTH.Cache.Players[tostring(src)])
 end)

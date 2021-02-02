@@ -24,7 +24,7 @@ function dump(o)
 end
 
 function _R(string, ...)
-   return string.format(string, args)
+   return string.format(string, ...)
 end
 
 function PlayerIdentifiers(playerID)
@@ -58,4 +58,11 @@ function PlayerIdentifiers(playerID)
     end
 
     return identifiers
+end
+
+function missionTextDisplay(text, time)
+    ClearPrints()
+    SetTextEntry_2("STRING")
+    AddTextComponentString(text)
+    DrawSubtitleTimed(time, 1)
 end
