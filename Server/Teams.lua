@@ -19,46 +19,27 @@ _TeamBase = {
       Points = 0
 }
 
--- Any custom variable
-Teams = {
-   red = {
-      Hex = "#FF0000",
-      Title = Config.Lang["title"]["red"]
-   },
-   green = {
-      Hex = "#00FF00",
-      Title = Config.Lang["title"]["green"]
-   },
-   blue = {
-      Hex = "#0000FF",
-      Title = Config.Lang["title"]["blue"]
-   }
-}
-
 -- place the _TeamBase to each team
-for i, team in pairs(Teams) do
+for i, team in pairs(Config.Teams) do
       for j, e in pairs(_TeamBase) do
             if type(_TeamBase[j]) == "table" then
-                  Teams[i][j] = {}
-                  for k, l in pairs(Teams[i][j]) do 
-                        if Teams[i][j][k] ~= nil then return end
-                        Teams[i][j][k] = l
+                  Config.Teams[i][j] = {}
+                  for k, l in pairs(_TeamBase[j]) do 
+                        if type(_TeamBase[j][k]) == "nil" then return end
+                        Config.Teams[i][j][k] = l
                   end
             else
-                  if Teams[i][j] ~= nil then return end
-                  Teams[i][j] = e
+                  if Config.Teams[i][j] ~= nil then return end
+                  Config.Teams[i][j] = e
             end
       end
 end
 
--- ! Testing ! --
--- Teams["red"].Players:add("123")
+RegisterCommand("team", function(source, args, raw)
+      if(type(Config.Teams[args[1]]) == "nil") then return false end
 
--- print(dump(Teams["red"].Players))
--- print(Teams["red"].Players.length)
+      KOTH.Cache.Players[tostring(source)].Team = args[1]
 
--- Teams["red"].Players:remove("123")
-
--- print(dump(Teams["red"].Players))
-
--- print(dump(Lang))
+      Config.Teams[args[1]].Players:add(source)
+      -- Todo: Add notification on joined team
+end, false)

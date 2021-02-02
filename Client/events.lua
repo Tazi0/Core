@@ -1,3 +1,5 @@
+Blips = {}
+
 RegisterNetEvent("koth:setPosition")
 AddEventHandler("koth:setPosition", function (x, y, z, rotation)
     local ped = PlayerPedId()
@@ -11,16 +13,16 @@ AddEventHandler("koth:setPosition", function (x, y, z, rotation)
 end)
 
 RegisterNetEvent("koth:setBlip")
-AddEventHandler("koth:setBlip", function (title, x, y, radius, color)
-    local blip = AddBlipForRadius(x, y, 194.0, radius)
+AddEventHandler("koth:setBlip", function (title, x, y, color, radius, sprite)
+    local blip = AddBlipForRadius(x, y, 0.0, radius + .0)
 
     SetBlipAsShortRange(blip, true)
     SetBlipColour(blip, color or 2)
     SetBlipAlpha(blip, 100)
 
-    local marker = AddBlipForCoord(x, y, 194.0)
+    local marker = AddBlipForCoord(x, y, 0.0)
 
-    SetBlipSprite(marker, 84)
+    SetBlipSprite(marker, sprite)
     SetBlipAsShortRange(marker, true)
     SetBlipColour(marker, color or 2)
     SetBlipScale(marker, 1.0)
@@ -28,4 +30,27 @@ AddEventHandler("koth:setBlip", function (title, x, y, radius, color)
     BeginTextCommandSetBlipName("STRING")
     AddTextComponentString(title)
     EndTextCommandSetBlipName(marker)
+
+    Blips[title] = {
+        Blip = blip,
+        Marker = Marker
+    }
+end)
+
+RegisterNetEvent("koth:changeBlip")
+AddEventHandler("koth:changeBlip", function(title, obj)
+    local manager = Blips[title]
+
+    if manager == nil then return false end
+
+    local blip = manager.Blip
+    local marker = manager.Marker
+
+    for k, v in pairs(obj) do
+        if k == "color" then
+            SetBlipColour(blip, v)
+            SetBlipColour(marker, v)
+        end
+    end
+
 end)
