@@ -2,8 +2,8 @@ function Player(playerID)
     local ids = PlayerIdentifiers(playerID)
     if ids[Config.Player.Connection] == "" then return nil end
 
-    local res = MySQL.Sync.fetchAll('SELECT * FROM users WHERE steamID=@steamID', { ['@steamID'] = ids[Config.Player.Connection] })
-
+    local uuid = Config.Player.Connection .. "ID"
+    local res = MySQL.Sync.fetchAll('SELECT * FROM users WHERE ' .. uuid ..'=@ID', { ['@ID'] = ids[Config.Player.Connection] })
 
     if type(res) ~= "table" then 
         res = {
@@ -14,14 +14,16 @@ function Player(playerID)
             streak = 0
         }
 
-        MySQL.Sync.execute('INSERT INTO users (steamID) VALUES (@steamID)', { ['@steamID'] = ids[Config.Player.Connection] })
+        MySQL.Sync.execute('INSERT INTO users (steamID, discordID) VALUES (@steamID, @discordID)', { ['@discordID'] =  ids.discord, ['@steamID'] = ids.steam })
     else
+        if res[1] == nil then return nil end
         res = res[1]
     end
 
     ids.prefered = Config.Player.Connection
 
     return {
+        __raw = res,
         Money = {
             __ids = ids,
             cash = tonumber(res.cash),
@@ -30,7 +32,7 @@ function Player(playerID)
 
                   self.cash = self.cash + amount
 
-                  MySQL.Sync.execute("UPDATE users SET cash = cash + @added WHERE steamID=@steamID", { ['@steamID'] = self.__ids.prefered, ['@added'] = amount})
+                  MySQL.Sync.execute("UPDATE users SET cash = cash + @added WHERE ".. uuid .."=@ID", { ['@ID'] = ids[Config.Player.Connection], ['@added'] = amount})
                   return self.cash
             end,
             remove = function(self, amount)
@@ -38,7 +40,7 @@ function Player(playerID)
 
                   self.cash = self.cash - amount
 
-                  MySQL.Sync.execute("UPDATE users SET cash = cash - @added WHERE steamID=@steamID", { ['@steamID'] = self.__ids.prefered, ['@added'] = amount})
+                  MySQL.Sync.execute("UPDATE users SET cash = cash - @added WHERE ".. uuid .."=@ID", { ['@ID'] = ids[Config.Player.Connection], ['@added'] = amount})
                   return self.cash
             end,
             reset = function(self)
@@ -46,8 +48,7 @@ function Player(playerID)
 
                   self.cash = 0
 
-                  MySQL.Sync.execute("UPDATE users SET cash = 0 WHERE steamID=@steamID", { ['@steamID'] = self.__ids.prefered})
-
+                  MySQL.Sync.execute("UPDATE users SET cash = 0 WHERE ".. uuid .."=@ID", { ['@ID'] = ids[Config.Player.Connection]})
                   return true
             end
         },
@@ -59,7 +60,7 @@ function Player(playerID)
 
                   self.xp = self.xp + amount
 
-                  MySQL.Sync.execute("UPDATE users SET xp = xp + @added WHERE steamID=@steamID", { ['@steamID'] = self.__ids.prefered, ['@added'] = amount})
+                  MySQL.Sync.execute("UPDATE users SET xp = xp + @added WHERE ".. uuid .."=@ID", { ['@ID'] = ids[Config.Player.Connection], ['@added'] = amount})
                   return self.xp
             end,
             removeXP = function(self, amount)
@@ -67,7 +68,7 @@ function Player(playerID)
 
                   self.xp = self.xp - amount
 
-                  MySQL.Sync.execute("UPDATE users SET xp = xp - @added WHERE steamID=@steamID", { ['@steamID'] = self.__ids.prefered, ['@added'] = amount})
+                  MySQL.Sync.execute("UPDATE users SET xp = xp - @added WHERE ".. uuid .."=@ID", { ['@ID'] = ids[Config.Player.Connection], ['@added'] = amount})
                   return self.xp
             end,
             reset = function(self)
@@ -75,8 +76,7 @@ function Player(playerID)
 
                   self.xp = 0
 
-                  MySQL.Sync.execute("UPDATE users SET xp = 0 WHERE steamID=@steamID", { ['@steamID'] = self.__ids.prefered})
-
+                  MySQL.Sync.execute("UPDATE users SET xp = 0 WHERE ".. uuid .."=@ID", { ['@ID'] = ids[Config.Player.Connection]})
                   return true
             end
         },
