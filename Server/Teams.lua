@@ -2,14 +2,17 @@
 _TeamBase = {
       Players = {
             length = 0,
-            add = function(self, playerID)
+            add = function(self, team, playerID)
                   if type(self) ~= "table" then return false end
                   table.insert(self, playerID)
                   self.length = self.length + 1
+                  TriggerClientEvent("koth:notification", playerID, "You ~g~joined ~s~team " .. team)
             end,
-            remove = function(self, playerID)
-                  if type(self) ~= "table" or _TeamBase.Players[playerID] ~= nil then return false end
+            remove = function(self, team, playerID)
+                  if type(self) ~= "table" or self[playerID] ~= nil then return false end
                   local index = tablefind(self, playerID)
+                  
+                  TriggerClientEvent("koth:notification", playerID, "You ~r~left ~s~team " .. team)
 
                   if index == nil then return false end
                   table.remove(self, index)
@@ -37,9 +40,11 @@ end
 
 RegisterCommand("team", function(source, args, raw)
       if(type(Config.Teams[args[1]]) == "nil") then return false end
+      local player = KOTH.Cache.Players[tostring(source)]
+      
+      if(type(player.Team) ~= "nil") then Config.Teams[player.Team].Players:remove(player.Team, source) end
 
       KOTH.Cache.Players[tostring(source)].Team = args[1]
 
-      Config.Teams[args[1]].Players:add(source)
-      -- Todo: Add notification on joined team
+      Config.Teams[args[1]].Players:add(args[1], source)
 end, false)

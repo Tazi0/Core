@@ -54,3 +54,10 @@ AddEventHandler("koth:changeBlip", function(title, obj)
     end
 
 end)
+
+RegisterNetEvent("koth:notification")
+AddEventHandler("koth:notification", function(text)
+    SetNotificationTextEntry('STRING')
+    AddTextComponentString(text)
+    DrawNotification(true, true)
+end)
