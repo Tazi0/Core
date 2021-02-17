@@ -1,7 +1,6 @@
 Zones = {
     Entered = {false, nil},
     SafeZone = false,
-    
 }
 
 Citizen.CreateThread(function()

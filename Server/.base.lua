@@ -1,6 +1,4 @@
-KOTH = {}
-
-
-KOTH["Cache"] = {
-    Players = {}
+KOTH = {
+    Players = {},
+    Teams = {}
 }

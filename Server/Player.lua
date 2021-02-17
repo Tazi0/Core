@@ -97,29 +97,37 @@ AddEventHandler("playerConnecting", function(name, setKickReason, deferrals)
     local src = source
     local player = Player(src)
     if(type(player) == "nil") then
-        deferrals.done(_R("Please start %s and restart FiveM", Config.Player.Connection))
+        deferrals.done(_R(Config.Lang.errors.startup, Config.Player.Connection))
     else
-        KOTH.Cache.Players[src] = player
+        KOTH.Players[tostring(src)] = player
     end
 end)
 
 AddEventHandler('playerDropped', function (reason)
-    local player = KOTH.Cache.Players[source]
+    local player = KOTH.Players[tostring(src)]
 
-    if(type(player) ~= "nil") then KOTH.Cache.Players[source] = nil end
+    if(type(player) ~= "nil") then KOTH.Players[tostring(src)] = nil end
 end)
 
 AddEventHandler('onResourceStart', function(resourceName)
     if (GetCurrentResourceName() ~= resourceName) then return end
 
     for _, src in ipairs(GetPlayers()) do
-        KOTH.Cache.Players[src] = Player(src)
+        KOTH.Players[tostring(src)] = Player(src)
     end
 end)
 
-RegisterNetEvent("koth:getPlayer")
-AddEventHandler("koth:getPlayer", function(src, cb)
-    if source ~= "" then src = source end
+RegisterNetEvent("koth:setPlayer")
+AddEventHandler("koth:setPlayer", function(source, key, item)
+    if key == nil or item == nil then return false end
 
-    cb(KOTH.Cache.Players[tostring(src)])
+    KOTH.Players[tostring(source)][key] = item
+
+    return true
+end)
+
+RegisterNetEvent("koth:getPlayer")
+AddEventHandler("koth:getPlayer", function(source, cb)
+    if source == nil or cb == nil then return false end
+    cb(KOTH.Players[tostring(source)])
 end)
