@@ -7,6 +7,7 @@ version '0.0.1'
 
 -- What to run
 client_scripts {
+    '@menuv/menuv.lua',
     'Language/*.lua',
     'Crossbase/*.lua',
     'config.lua',
@@ -21,3 +22,7 @@ server_scripts {
     'Server/*.lua'
 }
 
+dependencies {
+    'menuv',
+    'mysql-async'
+}
