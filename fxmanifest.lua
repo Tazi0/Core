@@ -12,6 +12,7 @@ client_scripts {
     'Crossbase/*.lua',
     'config.lua',
     'Client/*.lua'
+    'notification_ext/Client/*.lua'
 }
 
 server_scripts {
@@ -21,6 +22,13 @@ server_scripts {
     'config.lua',
     'Server/*.lua'
 }
+
+files {
+    "html/index.html",
+    "html/script.js",
+    "html/style.css"
+}
+
 
 dependencies {
     'menuv',
