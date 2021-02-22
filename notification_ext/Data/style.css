@@ -7,7 +7,9 @@
   font-family: 'Poppins', sans-serif;
 }
 
-#notification-area
+
+/* Positions */
+#notification-area-default
 {
     position: fixed;
     top: -55vh;
@@ -19,6 +21,89 @@
     justify-content: flex-end;
 }
 
+#notification-area-top
+{
+  top: 0;
+  left: 5%;
+  width: 90%;
+}
+
+#notification-area-topLeft
+{
+  top: 20px;
+  left: 20px;
+  width: 325px;
+}
+
+#notification-area-topCenter
+{
+  top: 5%;
+  left: 50%;
+  width: 325px;
+}
+/* Not done */
+/* #notification-area-topRight
+{
+  top: 20px;
+  left: 20px;
+  width: 325px;
+} */
+
+#notification-area-center
+{
+  top: 50%;
+  left: 50%;
+  width: 325px;
+  -webkit-transform: translate(-webkit-calc(-50% - .5px), -webkit-calc(-50% - .5px)) translateZ(0) scale(1, 1);
+          transform: translate(calc(-50% - .5px), calc(-50% - .5px)) translateZ(0) scale(1, 1); }
+}
+
+#notification-area-centerLeft
+{
+  top: 50%;
+  left: 20px;
+  width: 325px;
+  /* Insert webkit transform*/
+}
+
+#notification-area-centerRight
+{
+  top: 50%;
+  right: 20px;
+  width: 325px;
+  /* Insert webkit transform*/
+}
+
+#notification-area-bottom
+{
+  bottom: 0;
+  left: 5%;
+  width: 90%;
+}
+
+#notification-area-bottomLeft
+{
+  bottom: 20px;
+  left: 20px;
+  width: 325px;
+}
+
+#notification-area-bottomCenter
+{
+  bottom: 5%;
+  left: 50%;
+  width: 325px;
+    /* Insert webkit transform*/
+}
+
+#notification-area-bottomRight
+{
+  bottom: 20px;
+  left: 50%;
+  width: 325px;
+}
+
+
 #notification-area .notification{
     padding: 15px 15px;
     color:#f5f5f5;
@@ -27,7 +112,7 @@
     border-radius: 5px;
     margin: 5px 0px;
 }
-
+ /* Types */
 #notification-area .notification.success
 {
     animation: show_slide 1s ease forwards;

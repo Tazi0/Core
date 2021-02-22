@@ -23,12 +23,13 @@ server_scripts {
     'Server/*.lua'
 }
 
+ui_page "notification_ext/Data/index.html"
+
 files {
     "html/index.html",
     "html/script.js",
     "html/style.css"
 }
-
 
 dependencies {
     'menuv',
