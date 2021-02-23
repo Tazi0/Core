@@ -21,10 +21,10 @@ local position_alert =
 }
 
 RegisterNetEvent("KOTH:NOTIFICATION_EXT")
-AddEventHandler("KOTH:NOTIFICATION_EXT", function(text, type)
-    function KOTH:NOTIFICATION_EXT ({
-        text = text
-        type = type 
+AddEventHandler("KOTH:NOTIFICATION_EXT", function(text, type, position)
+    KOTH:NOTIFICATION_EXT ({
+        text = data_text
+        type = data_type 
         position = data_position 
     })
 end)

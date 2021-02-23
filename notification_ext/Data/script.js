@@ -8,8 +8,9 @@ function Notify(event)
 
         
         n.setAttribute("id", id);
-        n.classList.add("notification", event.data.type);
-        n.innerText = event.data.text;
+        n.classList = event.data.data_type;
+        n.innerText = event.data.data_text;
+        n.position.add("position", event.data.data_position);
         
         let notificationArea = document.getElementById("notification-area");
         notificationArea.appendChild(n);
