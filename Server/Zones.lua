@@ -116,6 +116,7 @@ end)
 
 RegisterNetEvent("koth:safezone")
 AddEventHandler("koth:safezone", function(distance, zone)
+    if KOTH == nil then return false end
     local player = KOTH.Cache.Players[tostring(source)]
 
     if player == nil or player.Team == nil then return false end
