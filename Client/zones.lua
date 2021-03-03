@@ -1,16 +1,15 @@
 Zones = {
     Entered = {false, nil},
-    SafeZone = false,
-    
+    SafeZone = false
 }
 
 Citizen.CreateThread(function()
     for k,v in pairs(Config.Zones.Blips) do
-        TriggerEvent("koth:setBlip", v[1] .. " zone", v[2], v[3], 39, v[4], Config.Zones.Sprite)
+        TriggerEvent("koth:setBlip", _R(Config.Lang.zones.blips.zone, v.Title), v[2], v[3], 39, v[4], Config.Zones.Sprite)
     end
 
     for k,v in pairs(Config.Teams) do
-        TriggerEvent("koth:setBlip", v.Title .. " safezone", v.Safezone[1], v.Safezone[2], v.Color, 150, 304)
+        TriggerEvent("koth:setBlip", _R(Config.Lang.zones.blips.safezone, v.Title), v.Safezone[1], v.Safezone[2], v.Color, 150, 304)
     end
 
     while true do
@@ -33,9 +32,14 @@ Citizen.CreateThread(function()
 
             if distance <= 150 and Zones.SafeZone == false then
                 TriggerServerEvent("koth:safezone", distance, _)
+                DisablePlayerFiring(player, true)
             elseif distance >= 150 and Zones.SafeZone == true and Zones.Entered[2] == _ then
                 TriggerServerEvent("koth:safezone", distance, _)
                 SetEntityInvincible(player, false)
+
+                if search.SafezoneShooting then
+                    DisablePlayerFiring(player, false)
+                end
             end
         end
     end
@@ -46,11 +50,11 @@ AddEventHandler("koth:invincible", function(zone, on)
     if(on) then
         Zones.SafeZone = true
         Zones.Entered[2] = zone
-        TriggerEvent("koth:notification", "You are now ~g~invincible")
+        TriggerEvent("koth:notification", Config.Lang.zones.invincible)
     else
         Zones.SafeZone = false
         Zones.Entered[2] = nil
-        TriggerEvent("koth:notification", "You are no longer ~r~invincible")
+        TriggerEvent("koth:notification", Config.Lang.zones.notInvincible)
     end
     local player = GetPlayerPed(-1)
 
@@ -69,11 +73,11 @@ RegisterNetEvent("koth:dangerzone", function(on, zone)
     if on then
         Zones.Entered[1] = true
         Zones.Entered[2] = zone
-        TriggerEvent("koth:notification", "You are in the ~r~danger zone")
+        TriggerEvent("koth:notification", Config.Lang.zones.inDangerZone)
     else
         Zones.Entered[1] = false
         Zones.Entered[2] = nil
-        TriggerEvent("koth:notification", "You have left the ~g~danger zone")
+        TriggerEvent("koth:notification", Config.Lang.zones.noDangerZone)
     end
 
 end)

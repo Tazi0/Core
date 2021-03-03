@@ -7,7 +7,7 @@ AddEventHandler("koth:renderClass", function(team)
     local player = KOTH.Cache.Players[tostring(src)]
     local ped = GetPlayerPed(src)
 
-    if player == nil or player.Team ~= team or player.Team == nil then return TriggerClientEvent("koth:notification", src, "You are not on ~y~".. team .. "~s~'s team") end
+    if player == nil or player.Team ~= team or player.Team == nil then return TriggerClientEvent("koth:notification", src, _R(Config.Lang.team.notSameTeam, team)) end
 
     local classes = Config.Classes
     local id = randomString(5)
@@ -21,7 +21,7 @@ AddEventHandler("koth:renderClass", function(team)
     function loop(class)
         local sub = {
             title = class.label,
-            description = "Choose your weapons",
+            description = Config.Lang.classes.chooseWeapons,
             items = {}
         }
 
@@ -31,10 +31,10 @@ AddEventHandler("koth:renderClass", function(team)
 
         if Config.Weapons[class.label] ~= nil then
             for l,w in pairs(Config.Weapons[class.label]) do
-                local title = "Extra"
+                local title = Config.Lang.classes.extra
 
-                if l == 1 then title = "Primary"
-                elseif l == 2 then title = "Secondary"
+                if l == 1 then title = Config.Lang.classes.primary
+                elseif l == 2 then title = Config.Lang.classes.secondary
                 end
 
                 local add = { --! 2.2
@@ -42,7 +42,7 @@ AddEventHandler("koth:renderClass", function(team)
                     type = "button",
                     submenu = {
                         title = title,
-                        description = "Choose your weapons",
+                        description = Config.Lang.classes.chooseWeapons,
                         items = {}
                     }
                 }
@@ -76,7 +76,7 @@ AddEventHandler("koth:renderClass", function(team)
                     end
 
                     local weapon = {
-                        label = title or "Unknown",
+                        label = title or Config.Lang.weapons.noWeapon,
                         type = "checked",
                         active = active,
                         change = "koth:selectedWeapon",
@@ -92,7 +92,7 @@ AddEventHandler("koth:renderClass", function(team)
 
         local add = {
             label = class.label,
-            description = "You can click on me",
+            description = Config.Lang.classes.clickMe,
             type = "button"
         }
 
@@ -109,7 +109,7 @@ AddEventHandler("koth:renderClass", function(team)
                 add["disabled"] = true
                 error(2041, add.label)
             else
-                add["description"] = "You need to be level ~y~" .. class.level .. "~s~ you are ~y~" .. player.Level.level
+                add["description"] = _R(Config.Lang.classes.lowerLevel, class.level, player.Level.level)
                 add['submenu'] = nil
             end
         end
@@ -144,6 +144,10 @@ end)
 
 RegisterNetEvent("koth:selectClass")
 AddEventHandler("koth:selectClass", function(menu, item)
+    if KOTH.Cache.Players[tostring(source)].Class ~= nil then
+        TriggerClientEvent("koth:removeWeapons", source)
+    end
+
     KOTH.Cache.Players[tostring(source)].Class = item.data.Label
 end)
 
@@ -166,9 +170,9 @@ AddEventHandler("koth:selectedWeapon", function(menu, item, oldValue, newValue)
 
     if i == nil then return false end
 
-    if weaponMenu == "primary" then
+    if weaponMenu == Config.Lang.classes.primary:lower() then
         typeMenu = 1
-    elseif weaponMenu == "secondary" then
+    elseif weaponMenu == Config.Lang.classes.secondary:lower() then
         typeMenu = 2
     end
 

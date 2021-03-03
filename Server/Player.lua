@@ -97,9 +97,9 @@ end
 AddEventHandler("playerConnecting", function(name, setKickReason, deferrals)
     local src = source
     local player = Player(src)
-    
+
     if(type(player) == "nil") then
-        deferrals.done(_R("Please start %s and restart FiveM", Config.Player.Connection))
+        deferrals.done(_R(Config.Lang.player.restart, Config.Player.Connection))
     else
         KOTH.Cache.Players[src] = player
     end

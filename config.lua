@@ -7,7 +7,11 @@ Preference = {
 Config = {
     Preference = Preference,
     Player = {
-        Connection = "steam" or "discord"
+        Connection = "discord" -- discord | steam
+    },
+    Menu = {
+        Placement = "topleft", -- topleft | topcenter | topright | centerleft | center | centerright | bottomleft | bottomcenter | bottomright
+        Size = "size-125" -- size-100 | size-110 | size-125 | size-150 | size-175 | size-200
     },
     Zones = {
         Blips = {
@@ -21,54 +25,55 @@ Config = {
     Classes = {
         title = "Classes",
         description = "Choose your class",
+        model = "s_m_y_blackops_01",
+        openKey = "E",
+        closeKey = "BACKSPACE",
         items = {
             {
-                label = "Noob",
+                label = "Basic",
                 level = 0
             },
             {
-                label = "Cheese",
-                level = 5
+                label = "Medium",
+                level = 15
             },
             {
                 label = "Boss",
-                level = 10
+                level = 30
             }
         }
     },
     Weapons = {
-        Noob = {
+        -- Available weapons in "Crossbase -> json.lua -> weaponHash"
+        Basic = {
             { -- Primary
-                {"weapon_assaultrifle", 0, 200}, -- Weapon / Level / Limited to 200 bullets
+                {"weapon_compactrifle", 0, 200}, -- Weapon / Level / Limited to 200 bullets (default is 200)
                 "weapon_musket" -- Weapon / Any level / 200 bullets
             },
             { -- Secondary
-                "weapon_pistol",
-                "weapon_revolver"
+                "weapon_appistol"
             },
             { -- Extra
-                "weapon_grenade",
-                "weapon_snowball"
+                "weapon_machete",
+                "weapon_flaregun"
             }
         },
-        Cheese = {
+        Medium = {
             { -- Primary
-                {"weapon_assaultrifle", 0, 200}, -- Weapon / Level / Limited to 200 bullets
-                "weapon_musket" -- Weapon / Any level / 200 bullets
+                "weapon_carbinerifle",
+                "weapon_pumpshotgun"
             },
             { -- Secondary
-                "weapon_pistol",
-                "weapon_revolver"
+                "weapon_pistol"
             },
             { -- Extra
-                "weapon_grenade",
-                "weapon_snowball"
+                "weapon_grenade"
             }
         },
         Boss = {
             { -- Primary
-                {"weapon_assaultrifle", 0, 200}, -- Weapon / Level / Limited to 200 bullets
-                "weapon_musket" -- Weapon / Any level / 200 bullets
+                "weapon_assaultrifle",
+                "weapon_musket"
             },
             { -- Secondary
                 "weapon_pistol",
@@ -76,31 +81,34 @@ Config = {
             },
             { -- Extra
                 "weapon_grenade",
-                "weapon_snowball"
+                "weapon_assaultsmg"
             }
         },
     },
     Teams = {
         red = {
-            Hex = "#FF0000",
-            Color = 1,
-            Title = Lang[Preference.lang]["title"]["red"],
-            Safezone = {1044.262, 99.416},
-            Crate = {957.747, 160.111, 79.85, 60} -- X, Y, Z, Rotation
+            Hex = "#FF0000", -- HEX color (used to mix colors & for UI)
+            Color = 1, -- ^1 = Red
+            Title = Lang[Preference.lang]["team"]["red"], -- Title of the team (defined in language file)
+            Safezone = {1044.262, 99.416}, -- X, Y
+            SafezoneShooting = true, -- False = enabled to shoot in safezone
+            Class = {957.747, 160.111, 79.85, 60} -- X, Y, Z, Rotation
         },
         green = {
             Hex = "#00FF00",
             Color = 2,
-            Title = Lang[Preference.lang]["title"]["green"],
+            Title = Lang[Preference.lang]["team"]["green"],
             Safezone = {654.182, 38.722},
-            Crate = {670.878, 47.826, 79.85, 60} -- X, Y, Z, Rotation
+            SafezoneShooting = true,
+            Class = {670.62, 2.72, 83.09, 294.7}
         },
         blue = {
             Hex = "#0000FF",
             Color = 3,
-            Title = Lang[Preference.lang]["title"]["blue"],
+            Title = Lang[Preference.lang]["team"]["blue"],
             Safezone = {862.124, -143.362},
-            Crate = {880.338, -125.153, 79.85, 60} -- X, Y, Z, Rotation
+            SafezoneShooting = true,
+            Class = {871.52, -122.9, 78.38, 34.69}
         }
     },
     Lang = Lang[Preference.lang]

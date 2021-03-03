@@ -83,7 +83,7 @@ AddEventHandler("koth:addPlayerToZone", function(zone)
     end
 
     if highest ~= 0 then
-        TriggerClientEvent("koth:changeBlip", -1, zone .. " zone", {color = Config.Teams[team].Color})
+        TriggerClientEvent("koth:changeBlip", -1, _R(Config.Lang.zones.blips.zone, zone), {color = Config.Teams[team].Color})
     end
 end)
 
@@ -108,9 +108,9 @@ AddEventHandler("koth:removePlayerFromZone", function(zone)
     end
 
     if highest ~= 0 then
-        TriggerClientEvent("koth:changeBlip", -1, zone .. " zone", {color = Config.Teams[team].Color})
+        TriggerClientEvent("koth:changeBlip", -1, _R(Config.Lang.zones.blips.zone, zone), {color = Config.Teams[team].Color})
     else
-        TriggerClientEvent("koth:changeBlip", -1, zone .. " zone", {color = 39})
+        TriggerClientEvent("koth:changeBlip", -1, _R(Config.Lang.zones.blips.zone, zone), {color = 39})
     end
 end)
 
@@ -128,7 +128,9 @@ AddEventHandler("koth:safezone", function(distance, zone)
         TriggerClientEvent("koth:invincible", source, zone, false)
         KOTH.Cache.Players[tostring(source)].Invincible = false
     elseif distance <= 150 and player.Team ~= zone then
-        TriggerClientEvent("koth:notification", source, "~r~Wrong ~s~safe zone~n~You are team: ".. player.Team);
+        TriggerClientEvent("koth:notification", source, _R(Config.Lang.zones.wrongZone, player.team));
+    else
+        TriggerClientEvent("koth:notification", source, _R(Config.Lang.zones.noTeam))
     end
 end)
 
