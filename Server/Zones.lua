@@ -65,7 +65,13 @@ RegisterNetEvent("koth:addPlayerToZone")
 AddEventHandler("koth:addPlayerToZone", function(zone)
     local player = KOTH.Cache.Players[tostring(source)]
 
-    if player == nil or player.Team == nil then return false end
+    if player == nil or player.Team == nil then 
+        if player.Team == nil then
+            TriggerClientEvent("koth:notification", source, _R(Config.Lang.zones.noTeam))
+        end
+        return false
+    end
+    
     if zone == nil then return false end
 
     
@@ -119,7 +125,12 @@ AddEventHandler("koth:safezone", function(distance, zone)
     if KOTH == nil then return false end
     local player = KOTH.Cache.Players[tostring(source)]
 
-    if player == nil or player.Team == nil then return false end
+    if player == nil or player.Team == nil then 
+        if player.Team == nil then
+            TriggerClientEvent("koth:notification", source, _R(Config.Lang.zones.noTeam))
+        end
+        return false
+    end
 
     if distance <= 150 and player.Team == zone and player.Invincible == false then
         TriggerClientEvent("koth:invincible", source, zone, true)
@@ -129,8 +140,6 @@ AddEventHandler("koth:safezone", function(distance, zone)
         KOTH.Cache.Players[tostring(source)].Invincible = false
     elseif distance <= 150 and player.Team ~= zone then
         TriggerClientEvent("koth:notification", source, _R(Config.Lang.zones.wrongZone, player.team));
-    else
-        TriggerClientEvent("koth:notification", source, _R(Config.Lang.zones.noTeam))
     end
 end)
 
