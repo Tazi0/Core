@@ -1,6 +1,10 @@
 RegisterNetEvent("koth:menu")
-AddEventHandler("koth:menu", function(arr)
-    local menu = MenuV:CreateMenu(arr.title or "No title", arr.description or "No description", 'topleft', 0, 0, 255, 'size-125', 'default', 'menuv', 'namespace', 'native')
+AddEventHandler("koth:menu", function(arr, id)
+    local res = KOTH:Menu(arr, id)
+end)
+
+KOTH.Menu = function(self, arr, id)
+    local menu = MenuV:CreateMenu(arr.title or Config.Lang.menu.noTitle, arr.description or Config.Lang.menu.noDescription, Config.Menu.Placement, 0, 0, 255, Config.Menu.Size, 'default', 'menuv', id or randomString(5), 'native')
 
     if arr.items then
         render(menu, arr.items, {})
@@ -11,11 +15,16 @@ AddEventHandler("koth:menu", function(arr)
     else
         menu:Open()
     end
-end)
+
+    self.OpenMenus[id or menu.UUID] = menu
+    return menu
+end
 
 RegisterNetEvent("koth:closeMenu")
-AddEventHandler("koth:closeMenu", function(menu)
-    MenuV:CloseMenu(menu)
+AddEventHandler("koth:closeMenu", function(uuid)
+    local menu = KOTH.OpenMenus[uuid]
+    if menu == nil then return false end
+    menu:Close()
 end)
 
 function render(menu, arr, list)
@@ -24,8 +33,8 @@ function render(menu, arr, list)
         local menuItem = nil
 
         local addList = {
-            label = item.label or "No label", 
-            description = item.description or "No description", 
+            label = item.label or Config.Lang.menu.noLabel, 
+            description = item.description or Config.Lang.menu.noDescription, 
             value = item.active or 0,
             disabled = item.disabled or false,
             icon = item.icon or '',
@@ -46,7 +55,7 @@ function render(menu, arr, list)
         elseif item.type == "button" then -- ! Button / Sub menu
             if item.submenu ~= nil then 
                 local s = item.submenu
-                local submenu = MenuV:CreateMenu(s.title or "No title", s.description or "No description", 'topleft', 0, 0, 255, 'size-125', 'default', 'menuv', 'sub-menu', 'native')
+                local submenu = MenuV:CreateMenu(s.title or Config.Lang.menu.noTitle, s.description or Config.Lang.menu.noDescription, Config.Menu.Placement, 0, 0, 255, Config.Menu.Size, 'default', 'menuv', randomString(5), 'native')
                 render(submenu, s.items, list)
                 addList["value"] = submenu
             end
@@ -56,33 +65,35 @@ function render(menu, arr, list)
         elseif item.type == "slider" then -- ! Slider
             menuItem = menu:AddRange(addList)
         end
+        
+        table.insert(list, menuItem)
     
         if(item.submenu == nil) then 
-            table.insert(list, menuItem)
-
             menuItem:On('change', function(item, newValue, oldValue)
                 for _,v in pairs(list) do
                     if v == item then
                         local e = arr[i]
-                        if e == nil then return TriggerEvent("koth:notification", "~r~This menu item isn't found") end
+                        if e == nil then return TriggerEvent("koth:notification", Config.Lua.menu.notFound) end
                         if e.change == nil then return false end
-                        e.change(menu, newValue, oldValue)
-                        break
-                    end
-                end
-            end)
-
-            menuItem:On('select', function(item)
-                for _,v in pairs(list) do
-                    if v == item then
-                        local e = arr[i]
-                        if e == nil then return TriggerEvent("koth:notification", "~r~This menu item isn't found") end
-                        if e.select == nil then return false end
-                        e.select(menu)
+                        if type(e.change) == "table" then e.change(menu, item, newValue, oldValue)
+                        else TriggerServerEvent(e.change, menu, item, newValue, oldValue) end
                         break
                     end
                 end
             end)
         end
+
+        menuItem:On('select', function(item)
+            for _,v in pairs(list) do
+                if v == item then
+                    local e = arr[i]
+                    if e == nil then return TriggerEvent("koth:notification", "~r~This menu item isn't found") end
+                    if e.select == nil then return false end
+                    if type(e.select) == "table" then e.select(menu, item)
+                    else TriggerServerEvent(e.select, menu, item) end
+                    break
+                end
+            end
+        end)
     end
 end

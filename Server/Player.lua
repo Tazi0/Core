@@ -53,8 +53,8 @@ function Player(playerID)
             end
         },
         Level = {
-            xp = res.xp,
-            level = res.level,
+            xp = tonumber(res.xp),
+            level = tonumber(res.level),
             addXP = function(self, amount)
                   if type(self) ~= "table" then return false end
 
@@ -81,10 +81,11 @@ function Player(playerID)
             end
         },
         Identifiers = ids,
-        Deaths = res.deaths,
-        Kills = res.kills,
-        Streak = res.streak,
+        Deaths = tonumber(res.deaths),
+        Kills = tonumber(res.kills),
+        Streak = tonumber(res.streak),
         LastLoggedIn = res.lastLoggedIn,
+        Class = nil,
         Team = nil,
         Invincible = false,
         setPos = function(self, x, y, z, rotation)
@@ -96,8 +97,9 @@ end
 AddEventHandler("playerConnecting", function(name, setKickReason, deferrals)
     local src = source
     local player = Player(src)
+
     if(type(player) == "nil") then
-        deferrals.done(_R("Please start %s and restart FiveM", Config.Player.Connection))
+        deferrals.done(_R(Config.Lang.player.restart, Config.Player.Connection))
     else
         KOTH.Cache.Players[src] = player
     end

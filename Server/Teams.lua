@@ -6,13 +6,13 @@ _TeamBase = {
                   if type(self) ~= "table" then return false end
                   table.insert(self, playerID)
                   self.length = self.length + 1
-                  TriggerClientEvent("koth:notification", playerID, "You ~g~joined ~s~team " .. team)
+                  TriggerClientEvent("koth:notification", playerID, _R(Config.Lang.team.joined, team))
             end,
             remove = function(self, team, playerID)
                   if type(self) ~= "table" or self[playerID] ~= nil then return false end
                   local index = tablefind(self, playerID)
                   
-                  TriggerClientEvent("koth:notification", playerID, "You ~r~left ~s~team " .. team)
+                  TriggerClientEvent("koth:notification", playerID, _R(Config.Lang.team.left, team))
 
                   if index == nil then return false end
                   table.remove(self, index)
@@ -42,6 +42,7 @@ RegisterCommand("team", function(source, args, raw)
       if(type(Config.Teams[args[1]]) == "nil") then return false end
       local player = KOTH.Cache.Players[tostring(source)]
       
+      if(type(player) == "nil") then return TriggerClientEvent("koth:notifications", Config.Lang.player.notFound) end
       if(type(player.Team) ~= "nil") then Config.Teams[player.Team].Players:remove(player.Team, source) end
 
       KOTH.Cache.Players[tostring(source)].Team = args[1]

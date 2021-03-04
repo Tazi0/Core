@@ -6,6 +6,44 @@ function tablefind(tab,el)
     end
 end
 
+function error(code, data)
+    if data == nil then data = "None" end
+    if code == "Cannot index a funcref" then return true end
+    print("^1("..code..", "..data..") ERROR OPEN DOCUMENTATION^0")
+end
+
+function firstUpper(str)
+    return str:gsub("(%l)(%w*)", function(a,b) return string.upper(a)..b end)
+end
+
+local charset = {}  do -- [0-9a-zA-Z]
+    for c = 48, 57  do table.insert(charset, string.char(c)) end
+    for c = 65, 90  do table.insert(charset, string.char(c)) end
+    for c = 97, 122 do table.insert(charset, string.char(c)) end
+end
+
+function randomString(length)
+    local str = ''
+
+    for i=1, length do
+        str = str .. charset[math.random(#charset)]
+    end
+
+    return str
+end
+
+function near(player, x, y, z)
+    local location = GetEntityCoords(player, 0)
+
+    if GetDistanceBetweenCoords == nil then return location end
+
+    local distance = GetDistanceBetweenCoords(x, y, z, location.x, location.y, location.z, true)
+
+    if distance <= 5 then
+        return true
+    end
+end
+
 function dump(o)
    if type(o) == 'table' then
       local s = '{ '
@@ -21,6 +59,14 @@ function dump(o)
    else
       return tostring(o)
    end
+end
+
+function table_invert(t)
+   local s={}
+   for k,v in ipairs(t) do
+     s[v]=k
+   end
+   return s
 end
 
 function _R(string, ...)
