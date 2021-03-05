@@ -7,7 +7,8 @@ Preference = {
 Config = {
     Preference = Preference,
     Player = {
-        Connection = "discord" -- discord | steam
+        Connection = "discord", -- discord | steam
+        NPC = false -- false | true
     },
     Menu = {
         Placement = "topleft", -- topleft | topcenter | topright | centerleft | center | centerright | bottomleft | bottomcenter | bottomright

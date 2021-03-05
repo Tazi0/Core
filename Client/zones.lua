@@ -89,3 +89,27 @@ RegisterNetEvent("koth:dangerzone", function(on, zone)
     end
 
 end)
+
+-- https://github.com/danini1705/No-NPC/blob/master/main.lua / Disable NPC
+if not Config.Player.NPC then
+    Citizen.CreateThread(function()
+        while true do
+            Citizen.Wait(0)
+            SetVehicleDensityMultiplierThisFrame(0.0) 
+            SetPedDensityMultiplierThisFrame(0.0)
+            SetRandomVehicleDensityMultiplierThisFrame(0.0)
+            SetParkedVehicleDensityMultiplierThisFrame(0.0)
+            SetScenarioPedDensityMultiplierThisFrame(0.0, 0.0)
+            SetGarbageTrucks(false)
+            SetRandomBoats(false)
+            SetCreateRandomCops(false)
+            SetCreateRandomCopsNotOnScenarios(false)
+            SetCreateRandomCopsOnScenarios(false)
+            StartAudioScene('CHARACTER_CHANGE_IN_SKY_SCENE')
+            
+            local x,y,z = table.unpack(GetEntityCoords(PlayerPedId()))
+            ClearAreaOfVehicles(x, y, z, 1000, false, false, false, false, false)
+            RemoveVehiclesFromGeneratorsInArea(x - 500.0, y - 500.0, z - 500.0, x + 500.0, y + 500.0, z + 500.0);
+        end
+    end)
+end

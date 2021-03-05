@@ -21,7 +21,7 @@ Citizen.CreateThread(function()
 
             local ped = CreatePed(4, GetHashKey(Config.Classes.model), x, y, z, r, true, true)
 
-            SetEntityCompletelyDisableCollision(ped, false, false)
+            -- SetEntityCompletelyDisableCollision(ped, false, false)
             SetBlockingOfNonTemporaryEvents(ped, true)
             FreezeEntityPosition(ped, true)
             SetEntityInvincible(ped, true)
