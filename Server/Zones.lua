@@ -4,49 +4,49 @@ _Zone = {
         blue = 0,
         green = 0
     },
+    Players = {},
     add = function(self, playerID)
         if type(self) ~= "table" then return false end
 
         local player = KOTH.Cache.Players[tostring(playerID)]
 
-        if player.Team == nil then return end
+        if player.Team == nil or self.Players[playerID] ~= nil then return false end
 
         self.Teams[player.Team] = self.Teams[player.Team] + 1
+        table.insert(self.Players, playerID)
     end,
     remove = function(self, playerID)
         if type(self) ~= "table" then return false end
 
         local player = KOTH.Cache.Players[tostring(playerID)]
 
-        if player.Team == nil then return end
+        if player.Team == nil then return false end
 
         self.Teams[player.Team] = self.Teams[player.Team] - 1
+        table.remove(self.Players, playerID)
     end,
     Points = 0,
     loop = function(self)
         Citizen.CreateThread(function()
-            Wait(60000*Config.Zones.TimeLoop)
+            Wait(60000*Config.Zone.TimeLoop)
 
-            for k,v in pairs(Zones) do
-                local highest = 0
-                local team = nil
-                local teams = v.Teams
+            local highest = 0
+            local team = nil
+            local teams = self.Teams
 
-                for j, l in pairs(teams) do
-                    if highest < l then
-                        team = j
-                        highest = l
-                    end
+            for j, l in pairs(teams) do
+                if highest < l then
+                    team = j
+                    highest = l
                 end
+            end
 
-                if highest ~= 0 or team ~= nil then
-                    -- print("Team: " .. team)
-                    Config.Teams[team].Points = Config.Teams[team].Points + 1
-                    -- Todo: trigger UI to update the points
-                    -- TriggerEvent("koth:teamPoint", -1, team, Teams[team].Points)
-                else
-                    -- print("no winner found")
-                end
+            if highest ~= 0 or team ~= nil then
+                Config.Teams[team].Points = Config.Teams[team].Points + 1
+                -- Todo: trigger UI to update the points
+                -- TriggerEvent("koth:teamPoint", -1, team, Teams[team].Points)
+            else
+                -- print("no winner found")
             end
 
             self:loop()
@@ -54,12 +54,28 @@ _Zone = {
     end
 }
 
-Zones = {}
+-- Make an new kill zone
+Active = _Zone
+Config.Zone.Active = Config.Zone.Available[math.random( #Config.Zone.Available )]
 
-for k,v in pairs(Config.Zones.Blips) do
-    Zones[v[1]] = _Zone
-    Zones[v[1]]:loop()
-end
+Citizen.CreateThread(function()
+    Citizen.Wait(200)
+    TriggerClientEvent("koth:setBlip", -1, Config.Lang.zones.blips.kill, Config.Zone.Active[1], Config.Zone.Active[2], 39, Config.Zone.Active[3], Config.Zone.Sprite)
+    TriggerClientEvent("koth:checkZone", -1, Config.Zone.Active)
+end)
+
+RegisterNetEvent("koth:newZone")
+AddEventHandler("koth:newZone", function()
+    Active = _Zone
+
+    Config.Zone.Active = Config.Zone.Available[math.random( #Config.Zone.Available )]
+
+    Citizen.CreateThread(function()
+        Citizen.Wait(200)
+        TriggerClientEvent("koth:setBlip", -1, Config.Lang.zones.blips.kill, Config.Zone.Active[1], Config.Zone.Active[2], 39, Config.Zone.Active[3], Config.Zone.Sprite)
+        TriggerClientEvent("koth:checkZone", -1, Config.Zone.Active)
+    end)
+end)
 
 RegisterNetEvent("koth:addPlayerToZone")
 AddEventHandler("koth:addPlayerToZone", function(zone)
@@ -75,13 +91,15 @@ AddEventHandler("koth:addPlayerToZone", function(zone)
     if zone == nil then return false end
 
     
-    Zones[zone]:add(source)
+    local result = Active:add(source)
+    
+    if result == false then return false end
     TriggerClientEvent("koth:dangerzone", source, true, zone)
 
     local team = nil
     local highest = 0
 
-    for k, v in pairs(Zones[zone].Teams) do
+    for k, v in pairs(Active.Teams) do
         if v ~= nil and highest < v then
             team = k
             highest = v
@@ -89,7 +107,7 @@ AddEventHandler("koth:addPlayerToZone", function(zone)
     end
 
     if highest ~= 0 then
-        TriggerClientEvent("koth:changeBlip", -1, _R(Config.Lang.zones.blips.zone, zone), {color = Config.Teams[team].Color})
+        TriggerClientEvent("koth:changeBlip", -1, Config.Lang.zones.blips.kill, {color = Config.Teams[team].Color})
     end
 end)
 
@@ -100,13 +118,13 @@ AddEventHandler("koth:removePlayerFromZone", function(zone)
     if player == nil or player.Team == nil then return false end
     if zone == nil then return false end
 
-    Zones[zone]:remove(source)
+    Active:remove(source)
     TriggerClientEvent("koth:dangerzone", source, false)
 
     local team = nil
     local highest = 0
 
-    for k, v in pairs(Zones[zone].Teams) do
+    for k, v in pairs(Active.Teams) do
         if v ~= nil and highest < v then
             team = k
             highest = lv
@@ -114,9 +132,9 @@ AddEventHandler("koth:removePlayerFromZone", function(zone)
     end
 
     if highest ~= 0 then
-        TriggerClientEvent("koth:changeBlip", -1, _R(Config.Lang.zones.blips.zone, zone), {color = Config.Teams[team].Color})
+        TriggerClientEvent("koth:changeBlip", -1, Config.Lang.zones.blips.kill, {color = Config.Teams[team].Color})
     else
-        TriggerClientEvent("koth:changeBlip", -1, _R(Config.Lang.zones.blips.zone, zone), {color = 39})
+        TriggerClientEvent("koth:changeBlip", -1, Config.Lang.zones.blips.kill, {color = 39})
     end
 end)
 

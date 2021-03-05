@@ -5,10 +5,6 @@ Zones = {
 
 Citizen.CreateThread(function()
     TriggerServerEvent("koth:createPlayer") -- Creates the player
-    
-    for k,v in pairs(Config.Zones.Blips) do
-        TriggerEvent("koth:setBlip", _R(Config.Lang.zones.blips.zone, v.Title), v[2], v[3], 39, v[4], Config.Zones.Sprite)
-    end
 
     for k,v in pairs(Config.Teams) do
         TriggerEvent("koth:setBlip", _R(Config.Lang.zones.blips.safezone, v.Title), v.Safezone[1], v.Safezone[2], v.Color, 150, 304)
@@ -19,16 +15,7 @@ Citizen.CreateThread(function()
         local player = GetPlayerPed(-1)
         local playerloc = GetEntityCoords(player, 0)
 
-        for _, search in pairs(Config.Zones.Blips) do
-            local distance = GetDistanceBetweenCoords(search[2], search[3], 0, playerloc['x'], playerloc['y'], 0, true)
-
-            if distance <= search[4] and Zones.Entered[1] == false then
-                TriggerServerEvent("koth:addPlayerToZone", search[1])
-            elseif distance >= search[4] and Zones.Entered[1] == true then
-                TriggerServerEvent("koth:removePlayerFromZone", search[1])
-            end
-        end
-
+        -- Safezone for each team
         for _, search in pairs(Config.Teams) do
             local distance = GetDistanceBetweenCoords(search.Safezone[1], search.Safezone[2], 0, playerloc['x'], playerloc['y'], 0, true)
 
@@ -45,6 +32,25 @@ Citizen.CreateThread(function()
             end
         end
     end
+end)
+
+RegisterNetEvent("koth:checkZone")
+AddEventHandler("koth:checkZone", function(zone)
+    Citizen.CreateThread(function()
+        while true do
+            Wait(1)
+            local player = GetPlayerPed(-1)
+            local playerloc = GetEntityCoords(player, 0)
+
+            local distance = GetDistanceBetweenCoords(zone[1], zone[2], 0, playerloc['x'], playerloc['y'], 0, true)
+
+            if distance <= zone[3] and Zones.Entered[1] == false then
+                TriggerServerEvent("koth:addPlayerToZone", zone[1])
+            elseif distance >= zone[3] and Zones.Entered[1] == true then
+                TriggerServerEvent("koth:removePlayerFromZone", zone[1])
+            end
+        end
+    end)
 end)
 
 RegisterNetEvent("koth:invincible")

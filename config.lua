@@ -13,11 +13,11 @@ Config = {
         Placement = "topleft", -- topleft | topcenter | topright | centerleft | center | centerright | bottomleft | bottomcenter | bottomright
         Size = "size-125" -- size-100 | size-110 | size-125 | size-150 | size-175 | size-200
     },
-    Zones = {
-        Blips = {
+    Zone = {
+        Available = {
             -- To change colors check: https://docs.fivem.net/docs/game-references/blips/#blip-colors
-            --title      x         y     size
-            {"First", -473.561, -519.668, 500}
+            --  x         y     size
+            {-473.561, -519.668, 500}
         },
         Sprite = 84,
         TimeLoop = 1 -- in minutes

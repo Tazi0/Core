@@ -16,7 +16,7 @@ Lang["en"] = {
         noTeam = "~r~You are not part of any team yet!",
         blips = {
             safezone = "%s safezone",
-            zone = "%s zone"
+            kill = "Kill zone"
         }
     },
     menu = {

@@ -70,6 +70,7 @@ function table_invert(t)
 end
 
 function _R(string, ...)
+    if type(string) == "nil" then return false end
    return string.format(string, ...)
 end
 
