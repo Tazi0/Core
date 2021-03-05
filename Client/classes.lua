@@ -13,15 +13,18 @@ Citizen.CreateThread(function()
             local z = team.Class[3] + .0 or GetHeightmapBottomZForPosition(x, y) + 3 or nil
             local r = team.Class[4] or 30
 
-            RequestModel(GetHashKey( Config.Classes.model ))
+            RequestModel(GetHashKey(Config.Classes.model))
+
             while not HasModelLoaded(GetHashKey(Config.Classes.model)) do
                 Citizen.Wait(1)
             end
 
-            local entity = CreatePed(4, GetHashKey(Config.Classes.model), x, y, z, r, true, true)
-            FreezeEntityPosition(entity, true)
-            SetEntityInvincible(entity, true)
-            StopSynchronizedEntityAnim(entity, 1, true)
+            local ped = CreatePed(4, GetHashKey(Config.Classes.model), x, y, z, r, true, true)
+
+            SetEntityCompletelyDisableCollision(ped, false, false)
+            SetBlockingOfNonTemporaryEvents(ped, true)
+            FreezeEntityPosition(ped, true)
+            SetEntityInvincible(ped, true)
         end
     end
     
