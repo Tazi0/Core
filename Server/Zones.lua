@@ -157,7 +157,7 @@ AddEventHandler("koth:safezone", function(distance, zone)
         TriggerClientEvent("koth:invincible", source, zone, false)
         KOTH.Cache.Players[tostring(source)].Invincible = false
     elseif distance <= 150 and player.Team ~= zone then
-        TriggerClientEvent("koth:notification", source, _R(Config.Lang.zones.wrongZone, player.team));
+        TriggerClientEvent("koth:notification", source, _R(Config.Lang.zones.wrongZone, player.Team));
     end
 end)
 

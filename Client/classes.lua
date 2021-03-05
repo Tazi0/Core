@@ -2,6 +2,7 @@ local uuid = nil
 
 Citizen.CreateThread(function()
     TriggerEvent("koth:_getWeapons")
+    SetEveryoneIgnorePlayer(GetPlayerPed(-1), true) -- Police ignore player
     local open = false
     Wait(0)
 
