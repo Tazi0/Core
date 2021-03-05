@@ -85,6 +85,11 @@ Config = {
             }
         },
     },
+    Kill = {
+        Currency = "$",
+        Player = 250,
+        Vehicle = 500
+    },
     Teams = {
         red = {
             Hex = "#FF0000", -- HEX color (used to mix colors & for UI)
