@@ -66,7 +66,7 @@ AddEventHandler("koth:addPlayerToZone", function(zone)
     local player = KOTH.Cache.Players[tostring(source)]
 
     if player == nil or player.Team == nil then 
-        if player.Team == nil then
+        if player ~= nil and player.Team == nil then
             TriggerClientEvent("koth:notification", source, _R(Config.Lang.zones.noTeam))
         end
         return false

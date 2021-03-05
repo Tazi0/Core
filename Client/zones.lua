@@ -4,6 +4,8 @@ Zones = {
 }
 
 Citizen.CreateThread(function()
+    TriggerServerEvent("koth:createPlayer") -- Creates the player
+    
     for k,v in pairs(Config.Zones.Blips) do
         TriggerEvent("koth:setBlip", _R(Config.Lang.zones.blips.zone, v.Title), v[2], v[3], 39, v[4], Config.Zones.Sprite)
     end

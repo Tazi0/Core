@@ -1,4 +1,4 @@
-function Player(playerID)
+function KOTH:Player(playerID)
     local ids = PlayerIdentifiers(playerID)
     if ids[Config.Player.Connection] == "" then return nil end
 
@@ -95,14 +95,21 @@ function Player(playerID)
 end
 
 AddEventHandler("playerConnecting", function(name, setKickReason, deferrals)
+    -- ID hasn't been set yet so can't add to system!
     local src = source
-    local player = Player(src)
+    local player = KOTH:Player(src)
 
-    if(type(player) == "nil") then
+    if(type(player.Identifiers[Config.Player.Connection]) == "nil") then
         deferrals.done(_R(Config.Lang.player.restart, Config.Player.Connection))
-    else
-        KOTH.Cache.Players[src] = player
     end
+end)
+
+RegisterNetEvent("koth:createPlayer")
+AddEventHandler("koth:createPlayer", function()
+    local src = source
+    if KOTH.Cache.Players[tostring(src)] ~= nil then return false end
+
+    KOTH.Cache.Players[tostring(src)] = KOTH:Player(src)
 end)
 
 AddEventHandler('playerDropped', function (reason)
@@ -115,7 +122,7 @@ AddEventHandler('onResourceStart', function(resourceName)
     if (GetCurrentResourceName() ~= resourceName) then return end
 
     for _, src in ipairs(GetPlayers()) do
-        KOTH.Cache.Players[src] = Player(src)
+        KOTH.Cache.Players[src] = KOTH:Player(src)
     end
 end)
 
