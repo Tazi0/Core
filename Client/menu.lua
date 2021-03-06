@@ -1,4 +1,3 @@
-RegisterNetEvent("koth:menu")
 AddEventHandler("koth:menu", function(arr, id)
     local res = KOTH:Menu(arr, id)
 end)
@@ -20,7 +19,6 @@ KOTH.Menu = function(self, arr, id)
     return menu
 end
 
-RegisterNetEvent("koth:closeMenu")
 AddEventHandler("koth:closeMenu", function(uuid)
     local menu = KOTH.OpenMenus[uuid]
     if menu == nil then return false end

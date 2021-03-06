@@ -40,12 +40,12 @@ end
 
 RegisterCommand("team", function(source, args, raw)
       if(type(Config.Teams[args[1]]) == "nil") then return false end
-      local player = KOTH.Cache.Players[tostring(source)]
+      local player = KOTH.Players[tostring(source)]
       
       if(type(player) == "nil") then return TriggerClientEvent("koth:notifications", Config.Lang.player.notFound) end
       if(type(player.Team) ~= "nil") then Config.Teams[player.Team].Players:remove(player.Team, source) end
 
-      KOTH.Cache.Players[tostring(source)].Team = args[1]
+      KOTH.Players[tostring(source)].Team = args[1]
 
       Config.Teams[args[1]].Players:add(args[1], source)
 end, false)

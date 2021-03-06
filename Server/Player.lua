@@ -104,31 +104,29 @@ AddEventHandler("playerConnecting", function(name, setKickReason, deferrals)
     end
 end)
 
-RegisterNetEvent("koth:createPlayer")
 AddEventHandler("koth:createPlayer", function()
     local src = source
-    if KOTH.Cache.Players[tostring(src)] ~= nil then return false end
+    if KOTH.Players[tostring(src)] ~= nil then return false end
 
-    KOTH.Cache.Players[tostring(src)] = KOTH:Player(src)
+    KOTH.Players[tostring(src)] = KOTH:Player(src)
 end)
 
 AddEventHandler('playerDropped', function (reason)
-    local player = KOTH.Cache.Players[source]
+    local player = KOTH.Players[source]
 
-    if(type(player) ~= "nil") then KOTH.Cache.Players[source] = nil end
+    if(type(player) ~= "nil") then KOTH.Players[source] = nil end
 end)
 
 AddEventHandler('onResourceStart', function(resourceName)
     if (GetCurrentResourceName() ~= resourceName) then return end
 
     for _, src in ipairs(GetPlayers()) do
-        KOTH.Cache.Players[src] = KOTH:Player(src)
+        KOTH.Players[src] = KOTH:Player(src)
     end
 end)
 
-RegisterNetEvent("koth:getPlayer")
 AddEventHandler("koth:getPlayer", function(src, cb)
     if source ~= "" then src = source end
 
-    cb(KOTH.Cache.Players[tostring(src)])
+    cb(KOTH.Players[tostring(src)])
 end)

@@ -18,7 +18,40 @@ Config = {
         Available = {
             -- To change colors check: https://docs.fivem.net/docs/game-references/blips/#blip-colors
             --  x         y     size
-            {-473.561, -519.668, 500}
+            {
+                Zone = {-473.561, -519.668, 500}, -- x | y | size
+                Teams = {
+                    red = {
+                        safe = {1044.262, 99.416}, -- x | y
+                        class = {957.747, 160.111, 79.85, 60} -- x | y | z | r
+                    },
+                    green = {
+                        safe = {654.182, 38.722},
+                        class = {670.62, 2.72, 83.09, 294.7}
+                    },
+                    blue = {
+                        safe = {862.124, -143.362},
+                        class = {871.52, -122.9, 78.38, 34.69}
+                    }
+                }
+            },
+            {
+                Zone = {-339.992, -1945.989, 500},
+                Teams = {
+                    red = {
+                        safe = {-1098.904, -2935.309},
+                        class = {-1054.49, -2913.35, 12.96, 60}
+                    },
+                    green = {
+                        safe = {-1123.189, -1712.315},
+                        class = {-1156.3, -1729.32, 3.2, 294.7}
+                    },
+                    blue = {
+                        safe = {-201.87, -2607.559},
+                        class = {-275.37, -2592.53, 5, 34.69}
+                    }
+                }
+            }
         },
         Sprite = 84,
         TimeLoop = 1 -- in minutes
@@ -91,25 +124,19 @@ Config = {
             Hex = "#FF0000", -- HEX color (used to mix colors & for UI)
             Color = 1, -- ^1 = Red
             Title = Lang[Preference.lang]["team"]["red"], -- Title of the team (defined in language file)
-            Safezone = {1044.262, 99.416}, -- X, Y
-            SafezoneShooting = true, -- False = enabled to shoot in safezone
-            Class = {957.747, 160.111, 79.85, 60} -- X, Y, Z, Rotation
+            SafezoneShooting = false -- True = enabled to shoot in safezone
         },
         green = {
             Hex = "#00FF00",
             Color = 2,
             Title = Lang[Preference.lang]["team"]["green"],
-            Safezone = {654.182, 38.722},
-            SafezoneShooting = true,
-            Class = {670.62, 2.72, 83.09, 294.7}
+            SafezoneShooting = false
         },
         blue = {
             Hex = "#0000FF",
             Color = 3,
             Title = Lang[Preference.lang]["team"]["blue"],
-            Safezone = {862.124, -143.362},
-            SafezoneShooting = true,
-            Class = {871.52, -122.9, 78.38, 34.69}
+            SafezoneShooting = false
         }
     },
     Lang = Lang[Preference.lang]

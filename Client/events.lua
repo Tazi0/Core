@@ -1,6 +1,5 @@
 Blips = {}
 
-RegisterNetEvent("koth:setPosition")
 AddEventHandler("koth:setPosition", function (x, y, z, rotation)
     local ped = PlayerPedId()
 
@@ -12,7 +11,6 @@ AddEventHandler("koth:setPosition", function (x, y, z, rotation)
     return true
 end)
 
-RegisterNetEvent("koth:setBlip")
 AddEventHandler("koth:setBlip", function (title, x, y, color, radius, sprite)
     local blip = AddBlipForRadius(x, y, 0.0, radius + .0)
 
@@ -37,7 +35,6 @@ AddEventHandler("koth:setBlip", function (title, x, y, color, radius, sprite)
     }
 end)
 
-RegisterNetEvent("koth:changeBlip")
 AddEventHandler("koth:changeBlip", function(title, obj)
     local manager = Blips[title]
 
@@ -55,7 +52,6 @@ AddEventHandler("koth:changeBlip", function(title, obj)
 
 end)
 
-RegisterNetEvent("koth:notification")
 AddEventHandler("koth:notification", function(text)
     SetNotificationTextEntry('STRING')
     AddTextComponentString(text)

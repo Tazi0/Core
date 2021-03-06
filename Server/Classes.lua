@@ -1,10 +1,9 @@
 activeWeapons = nil
 
-RegisterNetEvent("koth:renderClass")
 AddEventHandler("koth:renderClass", function(team)
     if source ~= "" then src = source end
 
-    local player = KOTH.Cache.Players[tostring(src)]
+    local player = KOTH.Players[tostring(src)]
     local ped = GetPlayerPed(src)
 
     if player == nil or player.Team ~= team or player.Team == nil then return TriggerClientEvent("koth:notification", src, _R(Config.Lang.team.notSameTeam, team)) end
@@ -133,7 +132,6 @@ AddEventHandler("koth:renderClass", function(team)
         end
     -- else
     --     ! Removed feature, this would only show selected class once selected.
-    --     print(player.Class)
     --     local v = has_value(classes.items, player.Class)
     --     loop(classes.items[v])
     -- end
@@ -142,20 +140,18 @@ AddEventHandler("koth:renderClass", function(team)
     TriggerClientEvent("koth:inMenu", src)
 end)
 
-RegisterNetEvent("koth:selectClass")
 AddEventHandler("koth:selectClass", function(menu, item)
-    if KOTH.Cache.Players[tostring(source)].Class ~= nil then
+    if KOTH.Players[tostring(source)].Class ~= nil then
         TriggerClientEvent("koth:removeWeapons", source)
     end
 
-    KOTH.Cache.Players[tostring(source)].Class = item.data.Label
+    KOTH.Players[tostring(source)].Class = item.data.Label
 end)
 
-RegisterNetEvent("koth:selectedWeapon")
 AddEventHandler("koth:selectedWeapon", function(menu, item, oldValue, newValue)
     local label = item.data.Label
     local weaponMenu = menu.data.Title:lower()
-    local class = KOTH.Cache.Players[tostring(source)].Class
+    local class = KOTH.Players[tostring(source)].Class
 
     if class == nil then return error(2051, source) end
 
@@ -193,7 +189,6 @@ AddEventHandler("koth:selectedWeapon", function(menu, item, oldValue, newValue)
     TriggerClientEvent("koth:ToggleWeapon", source, weapon, ammo, equip)
 end)
 
-RegisterNetEvent("koth:_activeWeapons")
 AddEventHandler("koth:_activeWeapons", function(arr)
     activeWeapons = arr
 end)

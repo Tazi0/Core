@@ -44,6 +44,12 @@ function near(player, x, y, z)
     end
 end
 
+function DisplayHelpText(str)
+	SetTextComponentFormat("STRING")
+	AddTextComponentString(str)
+	DisplayHelpTextFromStringLabel(0, 0, 1, -1)
+end
+
 function dump(o)
    if type(o) == 'table' then
       local s = '{ '
