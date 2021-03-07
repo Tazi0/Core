@@ -69,7 +69,6 @@ AddEventHandler("koth:addPlayerToZone", function(zone)
     end
     
     if zone == nil then return false end
-
     
     local result = Active:add(source)
     
@@ -106,7 +105,7 @@ AddEventHandler("koth:removePlayerFromZone", function(zone)
     for k, v in pairs(Active.Teams) do
         if v ~= nil and highest < v then
             team = k
-            highest = lv
+            highest = v
         end
     end
 

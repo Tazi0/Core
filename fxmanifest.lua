@@ -10,6 +10,7 @@ client_scripts {
     '@menuv/menuv.lua',
     'Language/*.lua',
     'Crossbase/*.lua',
+    'export.lua',
     'config.lua',
     'Client/*.lua'
 }
@@ -18,6 +19,7 @@ server_scripts {
     '@mysql-async/lib/MySQL.lua',
     'Language/*.lua',
     'Crossbase/*.lua',
+    'export.lua',
     'config.lua',
     'Server/*.lua'
 }

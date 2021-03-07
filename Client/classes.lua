@@ -57,6 +57,14 @@ AddEventHandler("koth:ToggleWeapon", function(type, ammo, equip)
     end
 end)
 
+AddEventHandler("koth:addAmmo", function(type, amount)
+    local ped = GetPlayerPed(GetPlayerFromServerId(source))
+    local remainingAmmo = GetAmmoInPedWeapon(ped, GetHashKey(type))
+    amount = amount + remainingAmmo
+
+    SetPedAmmo(ped, GetHashKey(type), amount)
+end)
+
 AddEventHandler("koth:spawnPed", function(ped, arr)
     local x = arr.x + .0 or nil
     local y = arr.y + .0 or nil
@@ -92,7 +100,10 @@ AddEventHandler("koth:_getWeapons", function()
         if hash ~= nil then
             local doesIt = GetWeaponClipSize(hash)
             if doesIt ~= 0 and HasPedGotWeapon(ped, hash, false) then
-                table.insert(arr, weaponHash[k])
+                table.insert(arr, {
+                    weapon = weaponHash[k],
+                    ammo = GetAmmoInPedWeapon(ped, hash)
+                })
             end
         end
     end

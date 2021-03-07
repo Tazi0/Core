@@ -10,7 +10,7 @@ _TeamBase = {
             end,
             remove = function(self, team, playerID)
                   if type(self) ~= "table" or self[playerID] ~= nil then return false end
-                  local index = tablefind(self, playerID)
+                  local index = table.find(self, playerID)
                   
                   TriggerClientEvent("koth:notification", playerID, _R(Config.Lang.team.left, team))
 
@@ -48,4 +48,6 @@ RegisterCommand("team", function(source, args, raw)
       KOTH.Players[tostring(source)].Team = args[1]
 
       Config.Teams[args[1]].Players:add(args[1], source)
+      
+      TriggerEvent("koth:respawn", source)
 end, false)

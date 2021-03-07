@@ -5,6 +5,17 @@ Zones = {
 
 Citizen.CreateThread(function()
     TriggerServerEvent("koth:createPlayer") -- Creates the player
+    TriggerServerEvent("koth:blipRender") -- Renders the blips
+
+    Citizen.CreateThread(function()
+        while true do
+            Wait(100)
+            local playerPed = GetPlayerPed(-1)
+            if IsEntityDead(playerPed) then
+                TriggerServerEvent("koth:respawn")
+            end
+        end
+    end)
 end)
 
 AddEventHandler("koth:checkZone", function(zone)
@@ -18,8 +29,10 @@ AddEventHandler("koth:checkZone", function(zone)
 
             if distance <= zone[3] and Zones.Entered[1] == false then
                 TriggerServerEvent("koth:addPlayerToZone", zone[1])
+                Zones.Entered[1] = true
             elseif distance >= zone[3] and Zones.Entered[1] == true then
                 TriggerServerEvent("koth:removePlayerFromZone", zone[1])
+                Zones.Entered[1] = false
             end
         end
     end)
@@ -40,10 +53,7 @@ AddEventHandler("koth:checkSafeZone", function(zone)
             elseif distance >= 150 and Zones.SafeZone == true and Zones.Entered[2] == zone.team then
                 TriggerServerEvent("koth:safezone", distance, zone.team)
                 SetEntityInvincible(player, false)
-
-                if not search.SafezoneShooting then
-                    DisablePlayerFiring(player, false)
-                end
+                DisablePlayerFiring(player, false)
             end
         end
     end)
@@ -74,11 +84,9 @@ end)
 
 AddEventHandler("koth:dangerzone", function(on, zone)
     if on then
-        Zones.Entered[1] = true
         Zones.Entered[2] = zone
         TriggerEvent("koth:notification", Config.Lang.zones.inDangerZone)
     else
-        Zones.Entered[1] = false
         Zones.Entered[2] = nil
         TriggerEvent("koth:notification", Config.Lang.zones.noDangerZone)
     end

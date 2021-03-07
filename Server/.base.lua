@@ -6,19 +6,28 @@ KOTH = {
 }
 
 -- Blips
-RegisterNetEvent("koth:newZone")
+RegisterServerEvent("koth:newZone")
+RegisterServerEvent("koth:blipRender")
 
 -- Classes
-RegisterNetEvent("koth:renderClass")
-RegisterNetEvent("koth:selectClass")
-RegisterNetEvent("koth:selectedWeapon")
-RegisterNetEvent("koth:_activeWeapons")
+RegisterServerEvent("koth:renderClass")
+RegisterServerEvent("koth:selectClass")
+
+RegisterServerEvent("koth:buyWeapon")
+RegisterServerEvent("koth:buyAmmo")
+RegisterServerEvent("koth:amountAmmo")
+RegisterServerEvent("koth:equipWeapon")
+RegisterServerEvent("koth:_activeWeapons")
 
 -- Players
-RegisterNetEvent("koth:createPlayer")
-RegisterNetEvent("koth:getPlayer")
+RegisterServerEvent("koth:createPlayer")
+RegisterServerEvent("koth:getPlayer")
+RegisterServerEvent("koth:respawn")
 
 -- Zones
-RegisterNetEvent("koth:addPlayerToZone")
-RegisterNetEvent("koth:removePlayerFromZone")
-RegisterNetEvent("koth:safezone")
+RegisterServerEvent("koth:addPlayerToZone")
+RegisterServerEvent("koth:removePlayerFromZone")
+RegisterServerEvent("koth:safezone")
+
+-- Other
+RegisterServerEvent("koth:Preference", function(cb) cb(Preference) end)

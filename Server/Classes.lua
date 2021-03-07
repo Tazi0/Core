@@ -47,14 +47,35 @@ AddEventHandler("koth:renderClass", function(team)
                 }
 
                 for _,e in ipairs(Config.Weapons[class.label][l]) do
-                    local label = e[1] or e
+                    local label = e.weapon or e
                     local title = nil
                     local active = false
                     local disabled = false
 
+                    local rent = {
+                        price = 1000,
+                        disabled = false
+                    }
+                    local buy = {
+                        price = 2000,
+                        disabled = false
+                    }
+
                     if type(e) == "table" then
-                        if player.Level.level < e[2] then
+                        if e.level ~= nil and player.Level.level < e.level then
                             disabled = true
+                        end
+
+                        if e.rent ~= nil then
+                            rent.price = e.rent
+                        else
+                            rent.disabled = true
+                        end
+
+                        if e.buy ~= nil then
+                            buy.price = e.buy
+                        else
+                            buy.disabled = true
                         end
                     end
 
@@ -74,13 +95,38 @@ AddEventHandler("koth:renderClass", function(team)
                         end
                     end
 
+
+
                     local weapon = {
                         label = title or Config.Lang.weapons.noWeapon,
-                        type = "checked",
-                        active = active,
-                        change = "koth:selectedWeapon",
+                        type = "button",
+                        submenu = {
+                            title = title or Config.Lang.weapons.noWeapon,
+                            description = "You want to rent or buy it?",
+                            items = {
+                                {
+                                    label = "Rent",
+                                    description = "Rent for ~y~" .. Config.Money.Currency .. rent.price,
+                                    type = "button",
+                                    select = "koth:buyWeapon",
+                                    disabled = rent.disabled
+                                }, {
+                                    label = "Buy",
+                                    description = "Buy for ~y~" .. Config.Money.Currency .. buy.price,
+                                    type = "button",
+                                    select = "koth:buyWeapon"
+                                }
+                            }
+                        },
+                        -- change = "koth:selectedWeapon",
                         disabled = disabled
                     }
+
+                    -- If weapon is bought buy player, have automaticly trigger "koth:selectedWeapon" and remove submenu
+                    if table.find(player.Weapons.items, label) then
+                        weapon.submenu = nil
+                        weapon.select = "koth:equipWeapon"
+                    end
 
                     table.insert(add.submenu.items, weapon)
                 end
@@ -126,15 +172,64 @@ AddEventHandler("koth:renderClass", function(team)
         return false
     end
 
-    -- if player.Class == nil then
-        for k,v in ipairs(classes.items) do
-            loop(v)
+    for k,v in ipairs(classes.items) do
+        loop(v)
+    end
+
+    local ammo = {
+        label = "Ammo",
+        description = "Buy ammo here",
+        type = "button",
+        submenu = {
+            title = "Ammo",
+            description = "Buy ammo here",
+            items = {}
+        }
+    }
+
+    for k, v in ipairs(activeWeapons) do
+        local weapon = v.weapon;
+
+        local item;
+        local equipment;
+
+        for k,v in pairs(Config.Weapons[player.Class]) do
+            if type(v) == "table" then
+                for j,o in pairs(v) do
+                    if type(o) == "table" and o.weapon == weapon then
+                        item = o
+                        equipment = j
+                        break
+                    elseif type(o) == "string" and o == weapon then
+                        item = o
+                        equipment = j
+                        break
+                    end
+                end
+            end
         end
-    -- else
-    --     ! Removed feature, this would only show selected class once selected.
-    --     local v = has_value(classes.items, player.Class)
-    --     loop(classes.items[v])
-    -- end
+
+        local arr = {
+            label = weaponHash[table.find(weaponHash, item.weapon)-1],
+            description = "Slide for more ammo, press ~y~Enter~s~ to buy",
+            type = "slider",
+            min = 0,
+            max = 10,
+            select = "koth:buyAmmo",
+            change = "koth:amountAmmo"
+            
+        }
+
+        local remainingAmmo = math.floor((item.bullets - v.ammo)/10)
+
+        if remainingAmmo < 10 then
+            arr.max = remainingAmmo
+        end
+
+        table.insert(ammo.submenu.items, arr)
+    end
+
+    table.insert(arr.items, ammo)
 
     TriggerClientEvent("koth:menu", src, arr, id)
     TriggerClientEvent("koth:inMenu", src)
@@ -148,45 +243,150 @@ AddEventHandler("koth:selectClass", function(menu, item)
     KOTH.Players[tostring(source)].Class = item.data.Label
 end)
 
-AddEventHandler("koth:selectedWeapon", function(menu, item, oldValue, newValue)
-    local label = item.data.Label
-    local weaponMenu = menu.data.Title:lower()
-    local class = KOTH.Players[tostring(source)].Class
+AddEventHandler("koth:buyWeapon", function(menu, choice, oldValue, newValue)
+    local src = source
+    local player = KOTH.Players[tostring(src)]
+    local title = menu.data.Title
+    local _type;
+    local item;
+    local equipment;
+    choice = choice.data.Label:lower()
 
-    if class == nil then return error(2051, source) end
-
-    local i = nil
-    local typeMenu = 3
     
-    for k,v in pairs(menu.data.Items.data) do
-        if type(v) == "table" and v.data ~= nil and v.data.Label == label then
-            i = k
+    if player.Class == nil then return error(2051, source) end
+
+    for k, v in ipairs(weaponHash) do
+        if v == title then
+            _type = weaponHash[k+1]
+            break
         end
     end
 
-    if i == nil then return false end
-
-    if weaponMenu == Config.Lang.classes.primary:lower() then
-        typeMenu = 1
-    elseif weaponMenu == Config.Lang.classes.secondary:lower() then
-        typeMenu = 2
+    for k,v in pairs(Config.Weapons[player.Class]) do
+        if type(v) == "table" then
+            for j,o in pairs(v) do
+                if type(o) == "table" and o.weapon == _type then
+                    item = o
+                    equipment = j
+                    break
+                elseif type(o) == "string" and o == _type then
+                    item = o
+                    equipment = j
+                    break
+                end
+            end
+        end
     end
+    
+    if item == nil then return false end
 
-
-    local weapon = Config.Weapons[class][typeMenu][i]
+    local weapon = item.weapon or item
+    local price = 0
     local equip = false
-    local ammo = nil
+    local bullets = 60
 
-    if typeMenu == 1 then
+    if equipment == 1 then
         equip = true
+        bullets = item.bullets or 150
+        price = item[choice] or 1000
+    elseif equipment == 2 then
+        bullets = item.bullets or 100
+        price = item[choice] or 500
+    elseif equipment == 3 then
+        bullets = item.bullets or 20
+        price = item[choice] or 100
     end
 
-    if type(weapon) == "table" then 
-        ammo = weapon[3]
-        weapon = weapon[1]
+    if price == nil or price == 0 then
+        TriggerClientEvent("koth:ToggleWeapon", src, weapon, bullets, equip)
+    else
+        if player.Money.cash >= price then
+            player.Money:remove(price)
+            TriggerClientEvent("koth:ToggleWeapon", src, weapon, bullets, equip)
+            player.Weapons:add(weapon)
+        else
+            TriggerClientEvent("koth:notification", src, "~r~You don't have enough money")
+        end
+    end
+end)
+
+AddEventHandler("koth:buyAmmo", function(menu, item, oldValue, newValue)
+    local src = source
+    local value = item.data.Value
+    local label = item.data.Label
+    local player = KOTH.Players[tostring(src)]
+    local weapon;
+
+    if value == 0 or value == nil or player == nil then return false end
+    value = value * 10
+
+    for k, v in ipairs(weaponHash) do
+        if v == label then
+            weapon = weaponHash[k+1]
+            break
+        end
     end
 
-    TriggerClientEvent("koth:ToggleWeapon", source, weapon, ammo, equip)
+    if weapon == nil or GetHashKey(weapon) == nil then return false end
+
+    local price = value * 5
+
+    if player.Money.cash >= price then
+        player.Money:remove(price)
+        TriggerClientEvent("koth:addAmmo", src, weapon, value)
+        TriggerClientEvent("koth:notification", src, "~g~Added " .. value .. " ammo")
+    else
+        TriggerClientEvent("koth:notification", src, "~r~You don't have enough money")
+    end
+end)
+
+AddEventHandler("koth:amountAmmo", function(menu, item, oldValue, newValue)
+    TriggerClientEvent("koth:notification", source, "Add ".. tonumber(newValue)*10 .. " ammo")
+end)
+
+AddEventHandler("koth:equipWeapon", function(menu, item)
+    local player = KOTH.Players[tostring(source)]
+    local label = item.data.Label
+    local weapon;
+    local conf;
+    local equipment;
+
+    for k, v in ipairs(weaponHash) do
+        if v == label then
+            weapon = weaponHash[k+1]
+            break
+        end
+    end
+
+    for k,v in pairs(Config.Weapons[player.Class]) do
+        if type(v) == "table" then
+            for j,o in pairs(v) do
+                if type(o) == "table" and o.weapon == _type then
+                    conf = o
+                    equipment = j
+                    break
+                elseif type(o) == "string" and o == _type then
+                    conf = o
+                    equipment = j
+                    break
+                end
+            end
+        end
+    end
+
+    local equip = false
+    local bullets = 60
+
+    if equipment == 1 then
+        equip = true
+        bullets = conf.bullets or 150
+    elseif equipment == 2 then
+        bullets = conf.bullets or 100
+    elseif equipment == 3 then
+        bullets = conf.bullets or 20
+    end
+
+    TriggerClientEvent("koth:ToggleWeapon", source, weapon, bullets, equip)
 end)
 
 AddEventHandler("koth:_activeWeapons", function(arr)

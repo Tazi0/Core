@@ -31,8 +31,16 @@ AddEventHandler("koth:setBlip", function (title, x, y, color, radius, sprite)
 
     Blips[title] = {
         Blip = blip,
-        Marker = Marker
+        Marker = marker
     }
+end)
+
+AddEventHandler("koth:deleteBlips", function()
+    for k, v in pairs(Blips) do
+        RemoveBlip(v.Blip)
+        RemoveBlip(v.Marker)
+        Blips[k] = nil
+    end
 end)
 
 AddEventHandler("koth:changeBlip", function(title, obj)

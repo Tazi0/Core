@@ -84,6 +84,41 @@ function KOTH:Player(playerID)
         Deaths = tonumber(res.deaths),
         Kills = tonumber(res.kills),
         Streak = tonumber(res.streak),
+        Weapons = {
+            items = table.split(res.weapons, ","),
+            add = function(self, weapon)
+                if type(self) ~= "table" then return false end
+                local hash = GetHashKey(weapon)
+
+                if hash ~= nil then
+                    table.insert(self.items, weapon)
+                    local str = table.join(self.items, ",")
+                    MySQL.Sync.execute("UPDATE users SET weapons = @str WHERE ".. uuid .."=@ID", { ['@str'] = str, ['@ID'] = ids[Config.Player.Connection]})
+                    return true
+                end
+
+                return false
+            end,
+            remove = function(self, weapon)
+                if type(self) ~= "table" then return false end
+                local hash = GetHashKey(weapon)
+
+                if hash ~= nil then
+                    table.remove(self.items, weapon)
+                    local str = table.join(self.items, ",")
+                    MySQL.Sync.execute("UPDATE users SET weapons = @str WHERE ".. uuid .."=@ID", { ['@str'] = str, ['@ID'] = ids[Config.Player.Connection]})
+                    return true
+                end
+            end,
+            reset = function(self)
+                if type(self) ~= "table" then return false end
+
+                self.items = {}
+                MySQL.Sync.execute("UPDATE users SET weapons ='' WHERE ".. uuid .."=@ID", { ['@ID'] = ids[Config.Player.Connection] })
+
+                return true
+            end
+        },
         LastLoggedIn = res.lastLoggedIn,
         Class = nil,
         Team = nil,
@@ -129,4 +164,19 @@ AddEventHandler("koth:getPlayer", function(src, cb)
     if source ~= "" then src = source end
 
     cb(KOTH.Players[tostring(src)])
+end)
+
+AddEventHandler("koth:respawn", function(src)
+    if source ~= "" then src = source end
+
+    local player = KOTH.Players[tostring(src)]
+    if player == nil or player.Team == nil then return false end
+
+    local spawn = Config.Zone.Active.Teams[tostring(player.Team)].spawn
+
+    local addX, addY = getRandomPointInCircle(5)
+    local x, y = spawn[1] + addX, spawn[2] + addY
+    local model = Config.Teams[tostring(player.Team)].Model
+
+    TriggerClientEvent("koth:teleport", src, x, y, spawn[3], nil, model, true)
 end)

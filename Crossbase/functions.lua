@@ -1,9 +1,11 @@
-function tablefind(tab,el)
-    for index, value in pairs(tab) do
-        if value == el then
-            return index
-        end
-    end
+function round(x) return x>=0 and math.floor(x+0.5) or math.ceil(x-0.5) end
+-- https://gist.github.com/kuccello/9c6fefb2df5cac1f9b64/9f1755ff77f4c973352e63c1f578ad75ffba4525
+function getRandomPointInCircle(radius)
+    local t = 2*math.pi*math.random()
+    local u = math.random()+math.random()
+    local r = nil
+    if u > 1 then r = 2-u else r = u end
+    return round(radius*r*math.cos(t)), round(radius*r*math.sin(t))
 end
 
 function error(code, data)
@@ -67,12 +69,37 @@ function dump(o)
    end
 end
 
-function table_invert(t)
-   local s={}
-   for k,v in ipairs(t) do
-     s[v]=k
-   end
-   return s
+function table.invert(t)
+    local s={}
+    for k,v in ipairs(t) do
+        s[v]=k
+    end
+    return s
+end
+
+function table.find(tab,el)
+    for index, value in pairs(tab) do
+        if value == el then
+            return index
+        end
+    end
+end
+
+function table.split(s, delimiter)
+    result = {};
+    if s == nil then return {} end
+    for match in (s..delimiter):gmatch("(.-)"..delimiter) do
+        table.insert(result, match);
+    end
+    return result;
+end
+
+function table.join(arr, delimiter)
+    str = ""
+    for k,v in pairs(arr) do
+        str = str.. delimiter .. v
+    end
+    return string.sub(m, 1);
 end
 
 function _R(string, ...)

@@ -1,14 +1,10 @@
--- Global variable, this will be exported for ever script to use
-Preference = {
-    lang = "en"
-}
-
 -- Resource configuration
 Config = {
     Preference = Preference,
     Player = {
         Connection = "discord", -- discord | steam
-        NPC = false -- false | true
+        NPC = false, -- false | true
+        AfkKick = true
     },
     Menu = {
         Placement = "topleft", -- topleft | topcenter | topright | centerleft | center | centerright | bottomleft | bottomcenter | bottomright
@@ -23,15 +19,18 @@ Config = {
                 Teams = {
                     red = {
                         safe = {1044.262, 99.416}, -- x | y
-                        class = {957.747, 160.111, 79.85, 60} -- x | y | z | r
+                        class = {957.747, 160.111, 79.85, 60}, -- x | y | z | r
+                        spawn = {1018.04, 38.84, 81.89} -- x | y | z
                     },
                     green = {
                         safe = {654.182, 38.722},
-                        class = {670.62, 2.72, 83.09, 294.7}
+                        class = {670.62, 2.72, 83.09, 294.7},
+                        spawn = {683.39, -3.38, 84.19}
                     },
                     blue = {
                         safe = {862.124, -143.362},
-                        class = {871.52, -122.9, 78.38, 34.69}
+                        class = {871.52, -122.9, 78.38, 34.69},
+                        spawn = {874.75, -109.28, 79.45}
                     }
                 }
             },
@@ -40,15 +39,18 @@ Config = {
                 Teams = {
                     red = {
                         safe = {-1098.904, -2935.309},
-                        class = {-1054.49, -2913.35, 12.96, 60}
+                        class = {-1054.49, -2913.35, 12.96, 60},
+                        spawn = {-1071.73, -2970.94, 13.96}
                     },
                     green = {
                         safe = {-1123.189, -1712.315},
-                        class = {-1156.3, -1729.32, 3.2, 294.7}
+                        class = {-1156.3, -1729.32, 3.2, 294.7},
+                        spawn = {-1165.48, -1702.43, 4.32}
                     },
                     blue = {
                         safe = {-201.87, -2607.559},
-                        class = {-275.37, -2592.53, 5, 34.69}
+                        class = {-275.37, -2592.53, 5, 34.69},
+                        spawn = {-261.1, -2583.84, 6}
                     }
                 }
             }
@@ -80,14 +82,26 @@ Config = {
     Weapons = {
         -- Available weapons in "Crossbase -> json.lua -> weaponHash"
         Basic = {
-            { -- Primary
-                {"weapon_compactrifle", 0, 200}, -- Weapon / Level / Limited to 200 bullets (default is 200)
-                "weapon_musket" -- Weapon / Any level / 200 bullets
+            { -- Primary (default: rent = 1000, buy = 2000, bullets = 150, level = 0)
+                {
+                    weapon = "weapon_compactrifle", -- Weapon hash
+                    level = 0, -- Any level
+                    rent = 0, -- Free rent
+                    buy = 1500, -- $1500 to buy the weapon (free to spawn weapon after)
+                    bullets = 100 -- Max amount of bullets you can buy
+                },
+                {
+                    weapon = "weapon_musket", 
+                    level = 20, -- Minimum level 20
+                    rent = 100, -- $100 rent
+                    buy = nil, -- Can't buy
+                    bullets = 60
+                }
             },
-            { -- Secondary
-                "weapon_appistol"
+            { -- Secondary (default: rent = 500, buy = 1500, bullets = 100, level = 0)
+                "weapon_appistol" -- Weapon / Any Level
             },
-            { -- Extra
+            { -- Extra (default: rent = 100, buy = 1000, bullets = 20, level = 0)
                 "weapon_machete",
                 "weapon_flaregun"
             }
@@ -119,24 +133,27 @@ Config = {
             }
         },
     },
+    Money = {
+        Currency = "$"
+    },
     Teams = {
         red = {
             Hex = "#FF0000", -- HEX color (used to mix colors & for UI)
             Color = 1, -- ^1 = Red
-            Title = Lang[Preference.lang]["team"]["red"], -- Title of the team (defined in language file)
-            SafezoneShooting = false -- True = enabled to shoot in safezone
+            SafezoneShooting = false, -- True = enabled to shoot in safezone
+            Model = "s_m_y_blackops_03"
         },
         green = {
             Hex = "#00FF00",
             Color = 2,
-            Title = Lang[Preference.lang]["team"]["green"],
-            SafezoneShooting = false
+            SafezoneShooting = false,
+            Model = "s_m_y_blackops_03"
         },
         blue = {
             Hex = "#0000FF",
             Color = 3,
-            Title = Lang[Preference.lang]["team"]["blue"],
-            SafezoneShooting = false
+            SafezoneShooting = false,
+            Model = "s_m_y_blackops_03"
         }
     },
     Lang = Lang[Preference.lang]
