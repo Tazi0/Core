@@ -16,7 +16,6 @@ end)
 TriggerEvent("koth:newZone", false)
 
 AddEventHandler("koth:blipRender", function()
-    local src;
     if source ~= "" then src = source else src = -1 end
     local ped = Config.Classes.model
 
@@ -24,11 +23,45 @@ AddEventHandler("koth:blipRender", function()
         Wait(1)
     end
 
-    -- Team -> Blips | Class ped | Invincibility
+    -- Team -> Blips | Class ped | Vehicle ped | Invincibility
     for k, team in pairs(Config.Zone.Active.Teams) do
-        TriggerClientEvent("koth:spawnPed", src, ped, {menu = k, x = team.class[1], y = team.class[2], z = team.class[3], rotation = team.class[4]})
-        TriggerClientEvent("koth:setBlip", src, _R(Config.Lang.zones.blips.safezone, firstUpper(k)), team.safe[1], team.safe[2], Config.Teams[k].Color, 150, 304)
-        TriggerClientEvent("koth:checkSafeZone", src, {x = team.safe[1], y = team.safe[2], team = k})
+        TriggerClientEvent("koth:setBlip", src, _R(Config.Lang.zones.blips.safezone, firstUpper(k)), team.safeZone[1], team.safeZone[2], Config.Teams[k].Color, 150, 304)
+        TriggerClientEvent("koth:spawnPed", src, ped, {
+            open = {
+                serverTrigger = "koth:renderClass",
+                helpMessage = Config.Lang.classes.helpMessage,
+                clientTrigger = "koth:_getWeapons",
+                team = k,
+                teamLimit = true,
+                keys = {
+                    open = Config.Menu.openKey or "E",
+                    close = Config.Menu.closeKey or "BACKSPACE",
+                },
+                freezePlayer = true
+            },
+            x = team.classModel[1], 
+            y = team.classModel[2], 
+            z = team.classModel[3], 
+            rotation = team.classModel[4]
+        })
+        TriggerClientEvent("koth:spawnPed", src, ped, {
+            open = {
+                serverTrigger = "koth:renderVehicles",
+                helpMessage = Config.Lang.vehicles.helpMessage,
+                team = k,
+                teamLimit = true,
+                keys = {
+                    open = Config.Menu.openKey or "E",
+                    close = Config.Menu.closeKey or "BACKSPACE",
+                },
+                freezePlayer = true
+            },
+            x = team.vehicleModel[1], 
+            y = team.vehicleModel[2], 
+            z = team.vehicleModel[3], 
+            rotation = team.vehicleModel[4]
+        })
+        TriggerClientEvent("koth:checkSafeZone", src, {x = team.safeZone[1], y = team.safeZone[2], team = k})
     end
 
     -- Kill zone -> Blip | Color change

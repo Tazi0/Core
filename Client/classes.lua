@@ -4,29 +4,34 @@ local menus = {}
 Citizen.CreateThread(function()
     TriggerEvent("koth:_getWeapons")
     SetEveryoneIgnorePlayer(GetPlayerPed(-1), true) -- Police ignore player
+    FreezeEntityPosition(PlayerPedId(), false) -- Unfreeze if player was ever in menu (error preventing)
     
+    -- ! Menu opener ! --
     while true do
         Wait(0)
 
-        -- Show class menu help text and trigger
         for k,v in pairs(menus) do
             local team = v
+            local menuInfo = v.open
             local x = team.x + .0 or nil
             local y = team.y + .0 or nil
             local z = team.z + .0 or GetHeightmapBottomZForPosition(x, y) + 3 or nil
 
             if x ~= nil or y ~= nil or z ~= nil then
                 if near(GetPlayerPed(-1), x, y, z) then
-                    DisplayHelpText(Config.Lang.classes.helpMessage)
+                    DisplayHelpText(menuInfo.helpMessage)
 
-                    if IsControlJustPressed(1, keys[Config.Classes.openKey]) and not open then
-                        TriggerEvent("koth:_getWeapons")
-                        TriggerServerEvent("koth:renderClass", team.menu)
+                    if IsControlJustPressed(1, keys[menuInfo.keys.open]) and not open then
+                        if(menuInfo.ClientTrigger) then TriggerEvent(menuInfo.ClientTrigger) end
+                        if menuInfo.teamLimit then limit = menuInfo.team  else limit = nil end
+
+                        TriggerServerEvent(menuInfo.serverTrigger, limit)
+                        if(menuInfo.freezePlayer) then FreezeEntityPosition(PlayerPedId(), true) end
+
                         open = true
-                    else
-                        if IsControlJustPressed(1, keys[Config.Classes.closeKey]) then
-                            FreezeEntityPosition(PlayerPedId(), false)
-                        end
+                    elseif IsControlJustPressed(1, keys[menuInfo.keys.close]) then
+                        if(menuInfo.freezePlayer) then FreezeEntityPosition(PlayerPedId(), false) end
+                        open = false
                     end
                 else
                     open = false
@@ -83,7 +88,9 @@ AddEventHandler("koth:spawnPed", function(ped, arr)
     FreezeEntityPosition(ped, true)
     SetEntityInvincible(ped, true)
 
-    table.insert(menus, arr)
+    if(arr.open ~= nil) then
+        table.insert(menus, arr)
+    end
 end)
 
 AddEventHandler("koth:inMenu", function()
