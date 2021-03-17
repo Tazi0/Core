@@ -67,3 +67,20 @@ bg-green {
     font-family: Poppins, sans-serif;
     color:rgb(28, 135, 50)
 }
+
+/* Crosshair CSS */
+
+.crosshair-wrapper {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateY(-50%) translateX(-50%)
+}
+
+.crosshair {
+    opacity: 75%;
+    margin-bottom: -7px;
+    width: 5vh;
+    height: 5vh;
+}
+
