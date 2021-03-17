@@ -41,7 +41,6 @@ bg-green {
 }
 
 /* Vehicle Info */
-
 .vehicle-info {
     position: absolute;
     bottom: 15rem;
@@ -68,8 +67,7 @@ bg-green {
     color:rgb(28, 135, 50)
 }
 
-/* Crosshair CSS */
-
+/* Crosshair  */
 .crosshair-wrapper {
     position: absolute;
     top: 50%;
@@ -84,3 +82,4 @@ bg-green {
     height: 5vh;
 }
 
+/* Selection Screen // WIP*/

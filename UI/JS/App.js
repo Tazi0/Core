@@ -13,7 +13,7 @@ xHair.hide() = function() {
 
 window.addEventListener('message', (event) => {
 
-if(event.data.type == "setVehicleData") {
+if(event.data.type === "setVehicleData") {
     $('.vehicle-info').html("");
     
     for(const person of event.data.persons) {
@@ -21,11 +21,19 @@ if(event.data.type == "setVehicleData") {
     }
 }
 // Crosshair 2
-if(event.data.type == "setCrosshair") {
+if(event.data.type === "setCrosshair") {
     if(event.data.state) {
         xHair.show();
     } else {
         xHair.hide();
+    }
+}
+
+if(event.data.type === "setSelectionScreen") {
+    if(event.data.state) {
+        $('.selection-screen-wrapper').css("display", "block");
+    } else {
+        $('.selection-screen-wrapper').css("display", "none")
     }
 }
 
