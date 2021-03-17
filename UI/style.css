@@ -1,13 +1,69 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap")
-/* Need new font*/
 
-/* Root Variables */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
+
+
+/* Variables */
 :root {
-    top-color: white;
-    top-font-size: 1.4rem;
-    money-color: #2cab44;
-    
-
-
+    --top-colour: white;
+    --top-font-size: 1.4rem;
+    --cash-colour: #007F0E;
+    --cash-font-size: 2rem;
+    --xp-bar-colour: rgb(24, 24, 24);
+    --xp-bar-text-color: #ddd;
+    --xp-bar-font-size: 0.9rem;
+    --xp-bar-border: 2px solid black;
+    --xp-bar-progress-colour: #066311;
+    --xp-rank-colour: #ddd;
+    --team-count-font-size: 1.6rem;
 }
 
+/* Page Style */
+* {
+    font-family: 'Poppins', sans-serif;
+}
+
+html, body {
+    margin: 0;
+    min-height: 100%;
+}
+
+/* Classes Help */
+bg-blue {
+    background-color: #3686d1;
+}
+
+bg-red {
+    background-color: #b33e36;
+}
+
+bg-green {
+    background-color: #2ca34a;
+}
+
+/* Vehicle Info */
+
+.vehicle-info {
+    position: absolute;
+    bottom: 15rem;
+    right: 1rem;
+}
+
+.vehicle-info .info-wrapper {
+    width: 100%;
+    text-align: right;
+}
+
+.vehicle-info .info {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.vehicle-info .info i {
+    padding-left: .75rem;
+}
+
+.vehicle-info .info {
+    font-family: Poppins, sans-serif;
+    color:rgb(28, 135, 50)
+}
