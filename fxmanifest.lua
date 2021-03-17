@@ -13,6 +13,8 @@ client_scripts {
     'export.lua',
     'config.lua',
     'Client/*.lua'
+    'UI/util.lua',
+    'UI/hud.lua'
 }
 
 server_scripts {
@@ -27,4 +29,10 @@ server_scripts {
 dependencies {
     'menuv',
     'mysql-async'
+}
+
+files {
+    'index.html',
+    'style.css',
+    'App.js'
 }
