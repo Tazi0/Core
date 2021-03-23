@@ -3,7 +3,7 @@ AddEventHandler("koth:menu", function(arr, id)
 end)
 
 KOTH.Menu = function(self, arr, id)
-    local menu = MenuV:CreateMenu(arr.title or Config.Lang.menu.noTitle, arr.description or Config.Lang.menu.noDescription, Config.Menu.Placement, 0, 0, 255, Config.Menu.Size, 'default', 'menuv', id or randomString(5), 'native')
+    local menu = MenuV:CreateMenu(arr.title or Config.Lang.menu.noTitle, arr.description, Config.Menu.Placement, 0, 0, 255, Config.Menu.Size, 'default', 'menuv', id or randomString(5), 'native')
 
     if arr.items then
         render(menu, arr.items, {})
@@ -32,7 +32,7 @@ function render(menu, arr, list)
 
         local addList = {
             label = item.label or Config.Lang.menu.noLabel, 
-            description = item.description or Config.Lang.menu.noDescription, 
+            description = item.description, 
             value = item.active or 0,
             disabled = item.disabled or false,
             icon = item.icon or '',
@@ -53,7 +53,7 @@ function render(menu, arr, list)
         elseif item.type == "button" then -- ! Button / Sub menu
             if item.submenu ~= nil then 
                 local s = item.submenu
-                local submenu = MenuV:CreateMenu(s.title or Config.Lang.menu.noTitle, s.description or Config.Lang.menu.noDescription, Config.Menu.Placement, 0, 0, 255, Config.Menu.Size, 'default', 'menuv', randomString(5), 'native')
+                local submenu = MenuV:CreateMenu(s.title or Config.Lang.menu.noTitle, s.description, Config.Menu.Placement, 0, 0, 255, Config.Menu.Size, 'default', 'menuv', randomString(5), 'native')
                 render(submenu, s.items, list)
                 addList["value"] = submenu
             end

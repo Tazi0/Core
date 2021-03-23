@@ -21,9 +21,10 @@ Lang["en"] = {
     },
     menu = {
         noTitle = "No title",
-        noDescription = "No description found",
         noLabel = "No label",
-        notFound = "~r~This menu item isn't found"
+        notFound = "~r~This menu item isn't found",
+        buy = "Buy",
+        rent = "Rent"
     },
     classes = {
         helpMessage = "Press ~INPUT_PICKUP~ to open class",
@@ -36,6 +37,21 @@ Lang["en"] = {
     },
     weapons = {
         noWeapon = "Unknown"
+    },
+    vehicles = {
+        helpMessage = "Press ~INPUT_PICKUP~ to open vehicles",
+        noMoney = "~r~You don't have enough money",
+        menu = {
+            title = "Vehicles",
+            select = "Select your %s",
+            type = "%s for ~y~%s%s", -- (Rent/Buy) for ($)(100)
+            free = "Spawn vehicle in for ~y~free",
+            rent = "Rent for ~y~%s%s",
+            buy = "Buy for ~y~%s%s",
+            option = "Buy / Rent",
+            both = "~y~Buy~s~ or ~y~Rent~s~ this vehicle",
+            none = "You can neather ~y~buy~s~ or ~y~rent~s~ this vehicle"
+        }
     },
     player = {
         notFound = "~r~We can't find you!",

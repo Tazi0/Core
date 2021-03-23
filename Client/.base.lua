@@ -25,6 +25,9 @@ RegisterNetEvent("koth:closeMenu")
 -- Player
 RegisterNetEvent("koth:teleport")
 
+-- Vehicles
+RegisterNetEvent("koth:spawnVehicle")
+
 -- Zones
 RegisterNetEvent("koth:checkZone")
 RegisterNetEvent("koth:checkSafeZone")

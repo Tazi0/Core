@@ -39,15 +39,20 @@ for i, team in pairs(Config.Teams) do
 end
 
 RegisterCommand("team", function(source, args, raw)
-      if(type(Config.Teams[args[1]]) == "nil") then return false end
+      TriggerEvent("koth:playerTeam", source, args[1])
+end, false)
+
+AddEventHandler("koth:playerTeam", function(src, team)
+      if(type(src) == "number") then source = src else team = src end
+      if(type(Config.Teams[team]) == "nil") then return false end
       local player = KOTH.Players[tostring(source)]
       
       if(type(player) == "nil") then return TriggerClientEvent("koth:notifications", Config.Lang.player.notFound) end
       if(type(player.Team) ~= "nil") then Config.Teams[player.Team].Players:remove(player.Team, source) end
 
-      KOTH.Players[tostring(source)].Team = args[1]
+      KOTH.Players[tostring(source)].Team = team
 
-      Config.Teams[args[1]].Players:add(args[1], source)
+      Config.Teams[team].Players:add(team, source)
       
       TriggerEvent("koth:respawn", source)
-end, false)
+end)

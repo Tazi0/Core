@@ -232,7 +232,6 @@ AddEventHandler("koth:renderClass", function(team)
     table.insert(arr.items, ammo)
 
     TriggerClientEvent("koth:menu", src, arr, id)
-    TriggerClientEvent("koth:inMenu", src)
 end)
 
 AddEventHandler("koth:selectClass", function(menu, item)

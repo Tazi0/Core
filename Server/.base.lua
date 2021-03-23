@@ -24,6 +24,15 @@ RegisterServerEvent("koth:createPlayer")
 RegisterServerEvent("koth:getPlayer")
 RegisterServerEvent("koth:respawn")
 
+-- Teams
+RegisterServerEvent("koth:playerTeam")
+
+
+-- Vehicles
+RegisterServerEvent("koth:renderVehicles")
+RegisterServerEvent("koth:spawnVehicle")
+RegisterServerEvent("koth:_activeVehicleTab")
+
 -- Zones
 RegisterServerEvent("koth:addPlayerToZone")
 RegisterServerEvent("koth:removePlayerFromZone")

@@ -97,9 +97,9 @@ end
 function table.join(arr, delimiter)
     str = ""
     for k,v in pairs(arr) do
-        str = str.. delimiter .. v
+        str = str .. delimiter .. v
     end
-    return string.sub(m, 1);
+    return string.sub(str, 1);
 end
 
 function _R(string, ...)

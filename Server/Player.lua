@@ -37,6 +37,7 @@ function KOTH:Player(playerID)
             end,
             remove = function(self, amount)
                   if type(self) ~= "table" then return false end
+                  if self.cash < amount then return false end
 
                   self.cash = self.cash - amount
 
@@ -65,6 +66,7 @@ function KOTH:Player(playerID)
             end,
             removeXP = function(self, amount)
                   if type(self) ~= "table" then return false end
+                  if self.xp < amount then return false end
 
                   self.xp = self.xp - amount
 
@@ -114,7 +116,42 @@ function KOTH:Player(playerID)
                 if type(self) ~= "table" then return false end
 
                 self.items = {}
-                MySQL.Sync.execute("UPDATE users SET weapons ='' WHERE ".. uuid .."=@ID", { ['@ID'] = ids[Config.Player.Connection] })
+                MySQL.Sync.execute("UPDATE users SET weapons = '' WHERE ".. uuid .."=@ID", { ['@ID'] = ids[Config.Player.Connection] })
+
+                return true
+            end
+        },
+        Vehicles = {
+            items = table.split(res.vehicles, ","),
+            add = function(self, vehicle)
+                if type(self) ~= "table" then return false end
+                local hash = GetHashKey(vehicle)
+
+                if hash ~= nil then
+                    table.insert(self.items, vehicle)
+                    local str = table.join(self.items, ",")
+                    MySQL.Sync.execute("UPDATE users SET vehicles = @str WHERE ".. uuid .."=@ID", { ['@str'] = str, ['@ID'] = ids[Config.Player.Connection]})
+                    return true
+                end
+
+                return false
+            end,
+            remove = function(self, vehicle)
+                if type(self) ~= "table" then return false end
+                local hash = GetHashKey(vehicle)
+
+                if hash ~= nil then
+                    table.remove(self.items, vehicle)
+                    local str = table.join(self.items, ",")
+                    MySQL.Sync.execute("UPDATE users SET vehicles = @str WHERE ".. uuid .."=@ID", { ['@str'] = str, ['@ID'] = ids[Config.Player.Connection]})
+                    return true
+                end
+            end,
+            reset = function(self)
+                if type(self) ~= "table" then return false end
+
+                self.items = {}
+                MySQL.Sync.execute("UPDATE users SET vehicles = '' WHERE ".. uuid .."=@ID", { ['@ID'] = ids[Config.Player.Connection] })
 
                 return true
             end
@@ -156,7 +193,7 @@ AddEventHandler('onResourceStart', function(resourceName)
     if (GetCurrentResourceName() ~= resourceName) then return end
 
     for _, src in ipairs(GetPlayers()) do
-        KOTH.Players[src] = KOTH:Player(src)
+        TriggerEvent("koth:createPlayer")
     end
 end)
 
