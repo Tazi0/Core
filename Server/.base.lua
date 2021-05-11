@@ -23,6 +23,7 @@ RegisterServerEvent("koth:_activeWeapons")
 RegisterServerEvent("koth:createPlayer")
 RegisterServerEvent("koth:getPlayer")
 RegisterServerEvent("koth:respawn")
+RegisterServerEvent("koth:afkkick")
 
 -- Teams
 RegisterServerEvent("koth:playerTeam")
