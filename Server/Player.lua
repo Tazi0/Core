@@ -4,24 +4,20 @@ function KOTH:Player(playerID)
 
     local uuid = Config.Player.Connection .. "ID"
     local res = MySQL.Sync.fetchAll('SELECT * FROM users WHERE ' .. uuid ..'=@ID', { ['@ID'] = ids[Config.Player.Connection] })
-
-    if type(res) ~= "table" then 
-        res = {
-            cash = 0,
-            level = 0,
-            xp = 0,
-            deaths = 0,
-            streak = 0
-        }
-
-        MySQL.Sync.execute('INSERT INTO users (steamID, discordID) VALUES (@steamID, @discordID)', { ['@discordID'] =  ids.discord, ['@steamID'] = ids.steam })
-    else
-        if res[1] == nil then return nil end
-        res = res[1]
-    end
-
+        if res[1] == nil then 
+			res = {
+				cash = 0,
+				level = 0,
+				xp = 0,
+				deaths = 0,
+				streak = 0
+			}
+			MySQL.Sync.execute('INSERT INTO users (steamID, discordID) VALUES (@steamID, @discordID)', { ['@discordID'] =  ids.discord, ['@steamID'] = ids.steam })
+		else
+			res = res[1]
+		end
     ids.prefered = Config.Player.Connection
-
+    
     return {
         __raw = res,
         Money = {
