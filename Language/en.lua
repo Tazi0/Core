@@ -55,6 +55,7 @@ Lang["en"] = {
     },
     player = {
         notFound = "~r~We can't find you!",
-        restart = "Please start %s and restart FiveM"
+        restart = "Please start %s and restart FiveM",
+		afkMessage = "AFK Warning! Move or you will get kicked!"
     }
 }
