@@ -213,3 +213,8 @@ AddEventHandler("koth:respawn", function(src)
 
     TriggerClientEvent("koth:teleport", src, x, y, spawn[3], nil, model, true)
 end)
+
+AddEventHandler("koth:afkkick", function(src)
+    if source ~= "" then src = source end
+	DropPlayer(src,"You got kicked for being AFK")
+end)
