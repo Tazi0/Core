@@ -15,11 +15,11 @@ Citizen.CreateThread(function()
 			if PedPosCurrent == PedPos and PedHeadingCurrent == PedHeading then
 				afktimer = afktimer-1
 				if afktimer == 60 then
-					TriggerEvent('chat:addMessage', {color = { 255, 0, 0},multiline = true,args = {"SERVER:", " "..Lang["en"].player.afkMessage}})
+					TriggerEvent('chat:addMessage', {color = { 255, 0, 0},multiline = true,args = {"SERVER:", " "..Config.Lang.player.afkMessage}})
 				elseif afktimer == 30 then
-					TriggerEvent('chat:addMessage', {color = { 255, 0, 0},multiline = true,args = {"SERVER:", " "..Lang["en"].player.afkMessage}})
+					TriggerEvent('chat:addMessage', {color = { 255, 0, 0},multiline = true,args = {"SERVER:", " "..Config.Lang.player.afkMessage}})
 				elseif afktimer == 10 then
-					TriggerEvent('chat:addMessage', {color = { 255, 0, 0},multiline = true,args = {"SERVER:", " "..Lang["en"].player.afkMessage}})
+					TriggerEvent('chat:addMessage', {color = { 255, 0, 0},multiline = true,args = {"SERVER:", " "..Config.Lang.player.afkMessage}})
 				elseif afktimer < 1 then
 					TriggerServerEvent("koth:afkkick")
 				end
