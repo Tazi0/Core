@@ -1,5 +1,6 @@
 -- Resource configuration
 Config = {
+    Afktimer = 400, -- Afk timer in seconds before player will get kicked
     Preference = Preference,
     Player = {
         Connection = "discord", -- discord | steam
