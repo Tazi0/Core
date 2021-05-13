@@ -10,7 +10,7 @@ Citizen.CreateThread(function()
 
     Citizen.CreateThread(function()
         while true do
-            Wait(1)
+            Wait(100)
             local playerPed = PlayerPedId()
             if IsEntityDead(playerPed) then
                 TriggerServerEvent("koth:respawn")
