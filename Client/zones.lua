@@ -1,3 +1,4 @@
+local resetZoneLoop = false
 Zones = {
     Entered = {false, nil},
     SafeZone = false
@@ -9,8 +10,8 @@ Citizen.CreateThread(function()
 
     Citizen.CreateThread(function()
         while true do
-            Wait(100)
-            local playerPed = GetPlayerPed(-1)
+            Wait(1)
+            local playerPed = PlayerPedId()
             if IsEntityDead(playerPed) then
                 TriggerServerEvent("koth:respawn")
             end
@@ -18,15 +19,21 @@ Citizen.CreateThread(function()
     end)
 end)
 
+
+AddEventHandler("koth:resetZoneCheck", function()
+	resetZoneLoop = true
+	Citizen.Wait(1100)
+	resetZoneLoop = false
+end)
+
 AddEventHandler("koth:checkZone", function(zone)
     Citizen.CreateThread(function()
         while true do
-            Wait(1)
-            local player = GetPlayerPed(-1)
+			if resetZoneLoop then break end
+            Wait(1000)
+            local player = PlayerPedId()
             local playerloc = GetEntityCoords(player, 0)
-
             local distance = GetDistanceBetweenCoords(zone[1], zone[2], 0, playerloc['x'], playerloc['y'], 0, true)
-
             if distance <= zone[3] and Zones.Entered[1] == false then
                 TriggerServerEvent("koth:addPlayerToZone", zone[1])
                 Zones.Entered[1] = true
@@ -40,13 +47,13 @@ end)
 
 AddEventHandler("koth:checkSafeZone", function(zone)
     Citizen.CreateThread(function()
+		Zones.SafeZone = false
         while true do
-            Wait(1)
-
-            local player = GetPlayerPed(-1)
+			if resetZoneLoop then break end
+            Wait(1000)
+			local player = PlayerPedId()
             local playerloc = GetEntityCoords(player, 0)
             local distance = GetDistanceBetweenCoords(zone.x, zone.y, 0, playerloc['x'], playerloc['y'], 0, true)
-
             if distance <= 150 and Zones.SafeZone == false then
                 TriggerServerEvent("koth:safezone", distance, zone.team)
                 DisablePlayerFiring(player, true)
@@ -69,7 +76,7 @@ AddEventHandler("koth:invincible", function(zone, on)
         Zones.Entered[2] = nil
         TriggerEvent("koth:notification", Config.Lang.zones.notInvincible)
     end
-    local player = GetPlayerPed(-1)
+    local player = PlayerPedId()
 
     SetEntityInvincible(player, on)
     SetPlayerInvincible(PlayerId(), on)
@@ -86,6 +93,7 @@ AddEventHandler("koth:dangerzone", function(on, zone)
     if on then
         Zones.Entered[2] = zone
         TriggerEvent("koth:notification", Config.Lang.zones.inDangerZone)
+		
     else
         Zones.Entered[2] = nil
         TriggerEvent("koth:notification", Config.Lang.zones.noDangerZone)
