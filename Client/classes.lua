@@ -3,7 +3,8 @@ local menus = {}
 
 Citizen.CreateThread(function()
     TriggerEvent("koth:_getWeapons")
-    SetEveryoneIgnorePlayer(GetPlayerPed(-1), true) -- Police ignore player
+    SetEveryoneIgnorePlayer(PlayerPedId(), true) -- Police ignore player
+    SetPoliceIgnorePlayer(PlayerPedId(), true) -- Police actually ignore player
     FreezeEntityPosition(PlayerPedId(), false) -- Unfreeze if player was ever in menu (error preventing)
     
     -- ! Menu opener ! --
