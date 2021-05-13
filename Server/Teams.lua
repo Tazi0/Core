@@ -40,6 +40,9 @@ end
 
 RegisterCommand("team", function(source, args, raw)
       TriggerEvent("koth:playerTeam", source, args[1])
+	  TriggerClientEvent("koth:resetZoneCheck", source)
+	  Citizen.Wait(2000)
+	  TriggerEvent("koth:blipRender",source) 
 end, false)
 
 AddEventHandler("koth:playerTeam", function(src, team)
@@ -51,7 +54,6 @@ AddEventHandler("koth:playerTeam", function(src, team)
       if(type(player.Team) ~= "nil") then Config.Teams[player.Team].Players:remove(player.Team, source) end
 
       KOTH.Players[tostring(source)].Team = team
-
       Config.Teams[team].Players:add(team, source)
       
       TriggerEvent("koth:respawn", source)
